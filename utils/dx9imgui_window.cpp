@@ -1,0 +1,188 @@
+#include "dx9imgui_window.h"
+
+dx9imgui_window::dx9imgui_window(update_fn update_, imgui_draw_callback_fn imgui_draw_callback_, WNDPROC wndproc_callback_)
+	: update(update_), imgui_draw_callback(imgui_draw_callback_), wndproc_callback(wndproc_callback_)
+{
+}
+
+dx9imgui_window::~dx9imgui_window()
+{
+}
+
+bool dx9imgui_window::initialize(void *instance_, std::wstring_view class_name_, UINT width, UINT height, DWORD style_)
+{
+	this->instance   = reinterpret_cast<HINSTANCE>(instance_);
+	this->class_name = class_name_;
+
+	WNDCLASSEXW wcxw =
+	{
+		sizeof(WNDCLASSEXW),
+		CS_CLASSDC,
+		this->wndproc_callback,
+		0,
+		0,
+		this->instance,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		this->class_name.data(),
+		NULL
+	};
+
+	if (!RegisterClassExW(&wcxw))
+		return false;
+
+	this->window = CreateWindowExW(
+		0, this->class_name.c_str(), L"", style_,
+		GetSystemMetrics(SM_CXSCREEN) / 2 - width / 2,
+		GetSystemMetrics(SM_CYSCREEN) / 2 - height / 2,
+		width, height,
+		NULL, NULL, this->instance, NULL);
+
+	if (!this->window)
+		return false;
+
+	this->dxdirect = Direct3DCreate9(D3D_SDK_VERSION);
+
+	if (!this->dxdirect)
+		return false;
+
+	this->present_params.Windowed      = true;
+	this->present_params.SwapEffect    = D3DSWAPEFFECT_DISCARD;
+	this->present_params.hDeviceWindow = this->window;
+
+	if (this->dxdirect->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, this->window, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &this->present_params, &this->dxdevice) != D3D_OK)
+		return false;
+
+	if (!ImGui::CreateContext() || !ImGui_ImplWin32_Init(this->window) || !ImGui_ImplDX9_Init(this->dxdevice))
+		return false;
+
+	ImGui::StyleColorsDark();
+	ImGui::GetIO().IniFilename = nullptr;
+
+	this->running = true;
+
+	return true;
+}
+
+bool dx9imgui_window::dispose()
+{
+	if (this->queued_dispose && !this->running)
+		return true;
+
+	if (!this->running)
+		return false;
+	
+	this->running = false;
+
+	ImGui_ImplDX9_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+	
+	this->dxdevice->Release();
+	this->dxdirect->Release();
+
+	DestroyWindow(this->window);
+	UnregisterClassW(this->class_name.c_str(), this->instance);
+
+	return true;
+}
+
+bool dx9imgui_window::start_dispose()
+{
+	this->queued_dispose = true;
+	return true;
+}
+
+void dx9imgui_window::run()
+{
+	MSG msg = {};
+	bool run_loop = true;
+	while (this->running && run_loop)
+	{
+		while (PeekMessageW(&msg, NULL, NULL, NULL, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessageW(&msg);
+
+			if (msg.message == WM_QUIT)
+				run_loop = false;
+		}
+
+		if (this->should_render)
+		{
+			this->dxdevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+			this->dxdevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+			this->dxdevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+			this->dxdevice->Clear(NULL, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(60, 60, 60), 1.f, NULL);
+
+			ImGui_ImplDX9_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			this->imgui_draw_callback();
+
+			ImGui::EndFrame();
+
+			if (this->dxdevice->BeginScene() == D3D_OK)
+			{
+				ImGui::Render();
+				ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+				this->dxdevice->EndScene();
+			}
+
+			if (this->dxdevice->Present(NULL, NULL, NULL, NULL) == D3DERR_DEVICELOST && this->dxdevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+			{
+				ImGui_ImplDX9_InvalidateDeviceObjects();
+				this->dxdevice->Reset(&this->present_params);
+				ImGui_ImplDX9_CreateDeviceObjects();
+			}
+		}
+		
+		this->update();
+
+		if (this->queued_dispose)
+			this->dispose();
+	}
+}
+
+bool dx9imgui_window::is_running()
+{
+	return this->running;
+}
+
+void dx9imgui_window::render_toggle(bool should_render_)
+{
+	this->should_render = should_render_;
+}
+
+LPDIRECT3DTEXTURE9 dx9imgui_window::make_texture_from_memory(void *bin, UINT bin_size, UINT width, UINT height)
+{
+	LPDIRECT3DTEXTURE9 result = nullptr;
+
+	if (D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, NULL, D3DPOOL_DEFAULT, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
+		return nullptr;
+
+	return result;
+}
+
+LPDIRECT3DDEVICE9 dx9imgui_window::get_device()
+{
+	return this->dxdevice;
+}
+
+HWND dx9imgui_window::get_wnd_handle()
+{
+	return this->window;
+}
+
+void dx9imgui_window::show()
+{
+	ShowWindow(this->window, SW_SHOW);
+}
+
+void dx9imgui_window::hide()
+{
+	ShowWindow(this->window, SW_HIDE);
+}

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{e17b5009-f901-4bd0-9104-01df24f490b4}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)arch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)console.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)dx9imgui_window.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)string_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)winternal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)console.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dx9imgui_window.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)string_utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)winternal.cpp" />
+  </ItemGroup>
+</Project>
