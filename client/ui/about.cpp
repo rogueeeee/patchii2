@@ -25,10 +25,9 @@ void ui::callbacks::about()
 		ImGui::SameLine();
 		ImGui::Text(
 			PATCHII_DESCRIPTION "\n"
-			"Arch: " ARCH_STR "\n"
 			"\n"
-			"Dear IMGui 1.81 - ocornut\n"
-			"MinHook 1.3.3 - TsudaKageyu\n"
+			"Dear IMGui - ocornut\n"
+			"MinHook - TsudaKageyu\n"
 			"\n"
 		);
 
