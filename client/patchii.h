@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utils/dx9imgui_window.h>
+#include <impl_gui/dx9imgui_window.h>
 
 bool patchii_run();
 

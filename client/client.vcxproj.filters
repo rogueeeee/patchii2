@@ -27,10 +27,10 @@
     <ClCompile Include="ui\about.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="patchii_module.cpp">
+    <ClCompile Include="modules\modules.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\modules.cpp">
+    <ClCompile Include="patchii_module_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="ui\ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="patchii_module.h">
+    <ClInclude Include="modules\modules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modules\modules.h">
+    <ClInclude Include="patchii_module_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

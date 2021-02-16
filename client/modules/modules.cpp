@@ -1,16 +1,30 @@
 #include "modules.h"
 #include <utils/console.h>
 
-#define patchii_register_module(name) std::make_pair(new (std::nothrow) name##(), #name)
+#define patchii_register_module(name) std::make_pair(new (std::nothrow) name##(), #name),
 
-std::vector<patchii_module *> patchii_get_registered_modules()
+std::vector<patchii_module_base *> patchii_get_registered_modules()
 {
-	std::vector<std::pair<patchii_module *, const char *>> preload =
+	std::vector<std::pair<patchii_module_base *, const char *>> preload =
 	{
-		// Place modules to preload here using the patchii_register_module macro
+		// Platform agnostic modules - Place module here if it works for both x86 and x64
+
+
+
+		#ifdef WIN32
+		// x86 modules - Place module here if it only works for x86
+
+
+
+		#else
+		// x64 modules - Place module here if it only works for x64
+
+
+
+		#endif
 	};
 
-	std::vector<patchii_module *> loaded;
+	std::vector<patchii_module_base *> loaded;
 	for (auto module : preload)
 	{
 		if (!module.first)

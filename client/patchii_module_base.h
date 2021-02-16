@@ -3,11 +3,11 @@
 #include <string>
 #include <utils/arch.h>
 
-class patchii_module
+class patchii_module_base
 {
 public:
-	patchii_module(std::string name_, arch target_arch_);
-	virtual ~patchii_module();
+	patchii_module_base(std::string name_);
+	virtual ~patchii_module_base();
 
 public:
 	virtual bool load() { return false; };
@@ -23,5 +23,4 @@ public:
 
 public:
 	std::string name;
-	const arch  target_arch;
 };

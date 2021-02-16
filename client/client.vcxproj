@@ -58,6 +58,7 @@
   <ImportGroup Label="Shared">
     <Import Project="..\utils\utils.vcxitems" Label="Shared" />
     <Import Project="..\third_party\third_party.vcxitems" Label="Shared" />
+    <Import Project="..\impl_gui\impl_gui.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -193,7 +194,7 @@
     <ClCompile Include="modules\modules.cpp" />
     <ClCompile Include="patchii_imgui_window.cpp" />
     <ClCompile Include="patchii.cpp" />
-    <ClCompile Include="patchii_module.cpp" />
+    <ClCompile Include="patchii_module_base.cpp" />
     <ClCompile Include="ui\about.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +202,7 @@
     <ClInclude Include="modules\modules.h" />
     <ClInclude Include="patchii_imgui_window.h" />
     <ClInclude Include="patchii.h" />
-    <ClInclude Include="patchii_module.h" />
+    <ClInclude Include="patchii_module_base.h" />
     <ClInclude Include="ui\ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

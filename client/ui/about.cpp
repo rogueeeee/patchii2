@@ -27,10 +27,6 @@ void ui::callbacks::about()
 			"\n"
 		);
 
-		ImGui::Text("[Contributors]");
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("n/a");
-
 		ImGui::TextColored(ImVec4 { .67f, .84f, .90f, 1.f }, "Repository: https://github.com/rogueeeee/patchii2");
 		if (ImGui::IsItemClicked())
 			ShellExecuteW(NULL, L"open", L"https://github.com/rogueeeee/patchii2", nullptr, nullptr, SW_SHOW);	

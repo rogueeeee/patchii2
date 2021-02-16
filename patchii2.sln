@@ -11,10 +11,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxite
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "third_party", "third_party\third_party.vcxitems", "{BEC1567B-E368-4181-B7F7-928D4EC1BE64}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impl_gui", "impl_gui\impl_gui.vcxitems", "{6B92865C-DF59-40A1-B035-3F881D57DBBA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		impl_gui\impl_gui.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
 		third_party\third_party.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
 		utils\utils.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
+		impl_gui\impl_gui.vcxitems*{6b92865c-df59-40a1-b035-3f881d57dbba}*SharedItemsImports = 9
 		third_party\third_party.vcxitems*{bec1567b-e368-4181-b7f7-928d4ec1be64}*SharedItemsImports = 9
 		utils\utils.vcxitems*{d4f03f32-2230-45d1-a0da-df349bad1423}*SharedItemsImports = 4
 		utils\utils.vcxitems*{e17b5009-f901-4bd0-9104-01df24f490b4}*SharedItemsImports = 9

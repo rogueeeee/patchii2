@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <utils/dx9imgui_window.h>
+#include <impl_gui/dx9imgui_window.h>
 
 namespace globals
 {

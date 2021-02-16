@@ -24,7 +24,7 @@ static bool         patchii_ufocus_cpu_limiter = true;
 static bool         patchii_ufocus_no_render   = false;
 static int          patchii_close_mode         = static_cast<int>(e_close_mode::HIDE);
 
-static std::vector<patchii_module *> patchii_modules;
+static std::vector<patchii_module_base *> patchii_modules;
 
 bool patchii_run()
 {
