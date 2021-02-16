@@ -112,8 +112,8 @@ void patchii_draw_imgui()
 			}
 
 			// Console toggle
-			static bool toggle_console = IsWindowVisible((HWND)console::get_hwnd());
-			if (ImGui::Checkbox("Toggle console", &toggle_console))
+			static bool toggle_console = IsWindowVisible(reinterpret_cast<HWND>(console::get_hwnd()));
+			if (ImGui::Checkbox("Show console", &toggle_console))
 				ShowWindow((HWND)console::get_hwnd(), toggle_console ? SW_SHOW : SW_HIDE);
 
 			// CPU Limiter
@@ -219,6 +219,8 @@ bool patchii_run()
 	dx9imgui_window::get().show();
 	dx9imgui_window::get().run();
 	
+	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_SHOW);
+
 	std::cout << "\nUnloading modules...";
 	for (auto mod : patchii_modules)
 	{

@@ -9,7 +9,7 @@
     </tr>
 </table>
 
-[Features](Features) • [Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
+[Features](#Features) • [Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
 
 ## Features
 
