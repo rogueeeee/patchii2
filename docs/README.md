@@ -11,6 +11,8 @@
 
 [Features](#Features) • [Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
 
+Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) for thing that you might be able to help with.
+
 ## Features
 
 ## Usage

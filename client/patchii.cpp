@@ -210,7 +210,7 @@ bool patchii_run()
 		return false;
 	}
 	
-	if (!dx9imgui_window::get().initialize(patchii_update, patchii_draw_imgui, patchii_dxreset, patchii_wndproc, proc_mod_handle, random_wstring(), 700, 500))
+	if (!dx9imgui_window::get().initialize(patchii_update, patchii_draw_imgui, patchii_dxreset, patchii_wndproc, proc_mod_handle, random_wstring(), 700, 500, WS_OVERLAPPEDWINDOW))
 	{
 		stat_wincreate.fail();
 		return false;
