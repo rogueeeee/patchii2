@@ -101,6 +101,10 @@ void patchii_draw_imgui()
 			ImGui::EndMenu();
 		}
 
+		for (auto mod : patchii_modules)
+			if (mod->is_loaded())
+				mod->draw_imgui_mainmenubar();
+
 		if (ImGui::BeginMenu("Settings"))
 		{
 			// Close Mode
@@ -134,11 +138,6 @@ void patchii_draw_imgui()
 
 		if (ImGui::MenuItem("Unload"))
 			dx9imgui_window::get().start_dispose();
-
-		for (auto mod : patchii_modules)
-			if (mod->is_loaded())
-				mod->draw_imgui_mainmenubar();
-
 	}
 	ImGui::EndMainMenuBar();
 
@@ -178,7 +177,13 @@ void patchii_update()
 
 void patchii_dxreset()
 {
+	for (auto mod : patchii_modules)
+	{
+		if (mod->is_loaded())
+			mod->dxreset();
 
+		delete mod;
+	}
 }
 
 bool patchii_run()

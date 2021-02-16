@@ -21,6 +21,8 @@ public:
 
 	virtual void update() {};
 
+	virtual void dxreset() {};
+
 public:
 	std::string name;
 };

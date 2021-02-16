@@ -72,13 +72,6 @@ All modules are implemented in **client/modules**.
         	virtual bool load() override;
         	virtual bool unload() override;
         	virtual bool is_loaded() override;
-
-        	virtual void draw_imgui_tools() override;
-        	virtual void draw_imgui_mainmenubar() override;
-        	virtual void draw_imgui_module_options() override;
-        	virtual void draw_imgui() override;
-
-        	virtual void update() override;
         };
         ```
 
@@ -88,41 +81,6 @@ All modules are implemented in **client/modules**.
 
         example_module::example_module()
             : patchii_module_base("example") // Your module's name
-        {
-        }
-
-        bool example_module::load()
-        {
-            return false;
-        }
-
-        bool example_module::unload()
-        {
-            return false;
-        }
-
-        bool example_module::is_loaded()
-        {
-            return false;
-        }
-
-        void example_module::draw_imgui_tools()
-        {
-        }
-
-        void example_module::draw_imgui_mainmenubar()
-        {
-        }
-
-        void example_module::draw_imgui_module_options()
-        {
-        }
-
-        void example_module::draw_imgui()
-        {
-        }
-
-        void example_module::update()
         {
         }
         ```
@@ -155,6 +113,7 @@ All modules are implemented in **client/modules**.
 | void draw_imgui_module_options() | Yes       | No            | Called when patchii is drawing the options for the current module. Used for adding extra options aside from the **Load** and **Unload** in the **Modules** menu item in the main menu bar. |
 | void draw_imgui()                | Yes       | Yes           | Called when patchii is drawing other ImGui controls. Used for general purpose drawing. (Windows, UI, etc...)                                                                               |
 | void update()                    | Yes       | Yes           | Called when patchii is running its update cycle / main loop. Used for general purpose code execution.                                                                                      |
+| void dxreset()                   | Yes       | Yes           | Called when DirectX device reset is called.                                                                                                                                                |
 
 ## License
 [GNU General Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
