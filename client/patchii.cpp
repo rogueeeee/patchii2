@@ -74,11 +74,16 @@ void patchii_draw_imgui()
 			{
 				if (ImGui::BeginMenu(mod->name.c_str()))
 				{
-					if (ImGui::MenuItem("Load"))
-						mod->load();
-
-					if (ImGui::MenuItem("Unload"))
-						mod->unload();
+					if (mod->is_loaded())
+					{
+						if (ImGui::MenuItem("Unload"))
+							mod->unload();
+					}
+					else
+					{
+						if (ImGui::MenuItem("Load"))
+							mod->load();
+					}
 
 					mod->draw_imgui_module_options();
 
