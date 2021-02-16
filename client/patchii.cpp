@@ -5,13 +5,12 @@
 #include <utils/console.h>
 #include <utils/string_utils.h>
 #include <utils/arch.h>
+#include <impl_gui/dx9imgui_window.h>
 
 #include <patchii_version.h>
 
 #include "ui/ui.h"
 #include "modules/modules.h"
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 enum class e_close_mode
 {
@@ -26,79 +25,22 @@ static int          patchii_close_mode         = static_cast<int>(e_close_mode::
 
 static std::vector<patchii_module_base *> patchii_modules;
 
-bool patchii_run()
-{
-	console::set_color(console::color::LPURPLE);
-	std::cout << "\n\npatchii2\n";
-	console::set_color(console::color::LYELLOW);
-	std::cout << "build: " __DATE__ " " __TIME__ "\n\n";
-	console::set_color();
-
-	std::cout << "Initializing patchii..."
-		"\nHandle: 0x" << globals::dll_handle;
-
-	// Make the instance available globally
-	globals::window_instance = &patchii_window;
-
-	std::cout << "\nLoading modules...";
-	patchii_modules = patchii_get_registered_modules();
-
-	console::status_print stat_wincreate("Creating window...");
-
-	HMODULE proc_mod_handle = GetModuleHandleW(NULL);
-	std::cout << "\nTarget Module Handle: 0x" << proc_mod_handle;
-	if (!proc_mod_handle)
-	{
-		stat_wincreate.fail();
-		return false;
-	}
-	
-	if (!patchii_window.initialize(proc_mod_handle, random_wstring(), 700, 500))
-	{
-		stat_wincreate.fail();
-		return false;
-	}
-	
-	stat_wincreate.ok();
-
-	// Hide the console window at this point as it is not as necessary
-	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_HIDE);
-
-	patchii_window.show();
-	patchii_window.run();
-	
-	std::cout << "\nUnloading modules...";
-	for (auto mod : patchii_modules)
-	{
-		if (mod->is_loaded())
-			mod->unload();
-
-		delete mod;
-	}
-
-	patchii_modules.clear();
-
-	std::cout << "\nPatchii has been unloaded";
-
-	return true;
-}
-
 LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
-		return TRUE;
-
 	switch (uMsg)
 	{
+		case WM_SIZE:
+			return TRUE;
+
 		case WM_CLOSE:
 		{
 			switch (static_cast<e_close_mode>(patchii_close_mode))
 			{
 				case e_close_mode::UNLOAD:
-					patchii_window.start_dispose();
+					dx9imgui_window::get().start_dispose();
 					break;
 				case e_close_mode::HIDE:
-					patchii_window.hide();
+					dx9imgui_window::get().hide();
 					patchii_is_hidden = true;
 					return TRUE;
 			}
@@ -113,7 +55,7 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 		}
 	}
 
-	return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+	return FALSE;
 }
 
 void patchii_draw_imgui()
@@ -186,7 +128,7 @@ void patchii_draw_imgui()
 			ui::about.toggle();
 
 		if (ImGui::MenuItem("Unload"))
-			patchii_window.start_dispose();
+			dx9imgui_window::get().start_dispose();
 
 		for (auto mod : patchii_modules)
 			if (mod->is_loaded())
@@ -208,23 +150,82 @@ void patchii_update()
 {
 	if (patchii_is_hidden && GetAsyncKeyState(VK_F5))
 	{
-		patchii_window.show();
+		dx9imgui_window::get().show();
 		patchii_is_hidden = false;
 	}
-	
+
 	for (auto mod : patchii_modules)
 		if (mod->is_loaded())
 			mod->update();
 
 	if (patchii_ufocus_cpu_limiter || patchii_ufocus_no_render)
 	{
-		static HWND wnd_handle = patchii_window.get_wnd_handle();
+		static HWND wnd_handle = dx9imgui_window::get().get_wnd_handle();
 		bool is_focused = GetForegroundWindow() == wnd_handle;
 
 		if (!is_focused && patchii_ufocus_cpu_limiter)
 			Sleep(100);
 
 		if (patchii_ufocus_no_render)
-			patchii_window.render_toggle(is_focused);
+			dx9imgui_window::get().render_toggle(is_focused);
 	}
+}
+
+void patchii_dxreset()
+{
+
+}
+
+bool patchii_run()
+{
+	console::set_color(console::color::LPURPLE);
+	std::cout << "\n\npatchii2\n";
+	console::set_color(console::color::LYELLOW);
+	std::cout << "build: " __DATE__ " " __TIME__ "\n\n";
+	console::set_color();
+
+	std::cout << "Initializing patchii..."
+		"\nHandle: 0x" << globals::dll_handle;
+
+	std::cout << "\nLoading modules...";
+	patchii_modules = patchii_get_registered_modules();
+
+	console::status_print stat_wincreate("Creating window...");
+
+	HMODULE proc_mod_handle = GetModuleHandleW(NULL);
+	std::cout << "\nTarget Module Handle: 0x" << proc_mod_handle;
+	if (!proc_mod_handle)
+	{
+		stat_wincreate.fail();
+		return false;
+	}
+	
+	if (!dx9imgui_window::get().initialize(patchii_update, patchii_draw_imgui, patchii_dxreset, patchii_wndproc, proc_mod_handle, random_wstring(), 700, 500))
+	{
+		stat_wincreate.fail();
+		return false;
+	}
+	
+	stat_wincreate.ok();
+
+	// Hide the console window at this point as it is not as necessary
+	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_HIDE);
+
+	dx9imgui_window::get().show();
+	dx9imgui_window::get().run();
+	
+	std::cout << "\nUnloading modules...";
+	for (auto mod : patchii_modules)
+	{
+		if (mod->is_loaded())
+			mod->unload();
+
+		delete mod;
+	}
+
+	patchii_modules.clear();
+
+	std::cout << "\nPatchii has been unloaded";
+
+	return true;
 }

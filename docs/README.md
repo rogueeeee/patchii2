@@ -9,7 +9,9 @@
     </tr>
 </table>
 
-[Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
+[Features](Features) • [Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
+
+## Features
 
 ## Usage
 Load the compiled DLL located in **build/*configuration*_*platform*/patchii_client.dll** followed by the appropriate build mode and target architecture to your target process.
@@ -59,6 +61,8 @@ All modules are implemented in **client/modules**.
     * Note: Some functions are optional to override.
     * **example_module.h**
         ```c++
+        #include <client/patchii_module_base.h>
+
         class example_module : public patchii_module_base
         {
         public:

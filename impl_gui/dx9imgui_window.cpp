@@ -1,7 +1,26 @@
 #include "dx9imgui_window.h"
 
-dx9imgui_window::dx9imgui_window(update_fn update_, imgui_draw_callback_fn imgui_draw_callback_, WNDPROC wndproc_callback_)
-	: update(update_), imgui_draw_callback(imgui_draw_callback_), wndproc_callback(wndproc_callback_)
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT WINAPI wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+		return TRUE;
+
+	if (msg == WM_SIZE && wparam != SIZE_MINIMIZED && dx9imgui_window::get().get_device())
+	{
+		dx9imgui_window::get().present_params.BackBufferWidth  = LOWORD(lparam);
+		dx9imgui_window::get().present_params.BackBufferHeight = HIWORD(lparam);
+		dx9imgui_window::get().reset();
+	}
+
+	if (dx9imgui_window::get().wndproc_callback(hwnd, msg, wparam, lparam))
+		return TRUE;
+
+	return DefWindowProcW(hwnd, msg, wparam, lparam);
+}
+
+dx9imgui_window::dx9imgui_window()
 {
 }
 
@@ -9,16 +28,23 @@ dx9imgui_window::~dx9imgui_window()
 {
 }
 
-bool dx9imgui_window::initialize(void *instance_, std::wstring_view class_name_, UINT width, UINT height, DWORD style_)
+bool dx9imgui_window::initialize(update_fn update_callback_, imgui_draw_callback_fn imgui_draw_callback_, dxreset_callback_fn dxreset_callback_, WNDPROC wndproc_callback_, void *instance_, std::wstring_view class_name_, UINT width, UINT height, DWORD style_, D3DCOLOR clear_color_)
 {
+	
+	this->update_callback = update_callback_;
+	this->imgui_draw_callback = imgui_draw_callback_;
+	this->dxreset_callback = dxreset_callback_;
+	this->wndproc_callback = wndproc_callback_;
+
 	this->instance   = reinterpret_cast<HINSTANCE>(instance_);
 	this->class_name = class_name_;
+	this->clear_color = clear_color_;
 
 	WNDCLASSEXW wcxw =
 	{
 		sizeof(WNDCLASSEXW),
 		CS_CLASSDC,
-		this->wndproc_callback,
+		wndproc,
 		0,
 		0,
 		this->instance,
@@ -115,7 +141,7 @@ void dx9imgui_window::run()
 			this->dxdevice->SetRenderState(D3DRS_ZENABLE, FALSE);
 			this->dxdevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			this->dxdevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-			this->dxdevice->Clear(NULL, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(60, 60, 60), 1.f, NULL);
+			this->dxdevice->Clear(NULL, NULL, D3DCLEAR_TARGET, this->clear_color, 1.f, NULL);
 
 			ImGui_ImplDX9_NewFrame();
 			ImGui_ImplWin32_NewFrame();
@@ -133,14 +159,10 @@ void dx9imgui_window::run()
 			}
 
 			if (this->dxdevice->Present(NULL, NULL, NULL, NULL) == D3DERR_DEVICELOST && this->dxdevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
-			{
-				ImGui_ImplDX9_InvalidateDeviceObjects();
-				this->dxdevice->Reset(&this->present_params);
-				ImGui_ImplDX9_CreateDeviceObjects();
-			}
+				this->reset();
 		}
 		
-		this->update();
+		this->update_callback();
 
 		if (this->queued_dispose)
 			this->dispose();
@@ -161,8 +183,11 @@ LPDIRECT3DTEXTURE9 dx9imgui_window::make_texture_from_memory(void *bin, UINT bin
 {
 	LPDIRECT3DTEXTURE9 result = nullptr;
 
-	if (D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, NULL, D3DPOOL_DEFAULT, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
+	if (D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
+	{
+		DWORD err = GetLastError();
 		return nullptr;
+	}
 
 	return result;
 }
@@ -186,3 +211,18 @@ void dx9imgui_window::hide()
 {
 	ShowWindow(this->window, SW_HIDE);
 }
+
+void dx9imgui_window::reset()
+{
+	ImGui_ImplDX9_InvalidateDeviceObjects();
+	this->dxdevice->Reset(&this->present_params);
+	ImGui_ImplDX9_CreateDeviceObjects();
+	this->dxreset_callback();
+}
+
+dx9imgui_window &dx9imgui_window::get()
+{
+	return dx9imgui_window::single_instance;
+}
+
+dx9imgui_window dx9imgui_window::single_instance;
