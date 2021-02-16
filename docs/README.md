@@ -11,12 +11,12 @@
 
 [Features](#Features) • [Usage](#Usage) • [Development](#Development) • [Module Development](#Module-Development) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
 
-Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) for thing that you might be able to help with.
+Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) page for things that you might be able to help with.
 
 ## Features
 
 ## Usage
-Load the compiled DLL located in **build/*configuration*_*platform*/patchii_client.dll** followed by the appropriate build mode and target architecture to your target process.
+Load the compiled DLL located in **build\\*configuration*_*platform*\patchii_client.dll** followed by the appropriate build mode and target architecture to your target process.
 
 ## Development
 [Repository Branches](#Repository-Branches) • [Prerequisite](#Prerequisite) • [Project Structure](#Project-Structure) • [Setup](#Setup) • [Building](#Building)
@@ -33,31 +33,62 @@ n/a
 
 | Directory    | Description                                                                                                                    |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| client/      | Contains the main client that gets loaded to a target process, mainly contains all the features, implementations, and modules. |
-| docs/        | Contains the project documentation.                                                                                            |
-| impl_gui/    | Contains GUI Implementation of Win32 GUI, DirectX, and IMGui. Allows quick creation of GUI applications.                       |
-| loader/      | Contains the loader project source code that loads the client into a target process.                                           |
-| third_party/ | Contains 3rd-Party code and libraries.                                                                                         |
-| utils/       | Contains general purpose utility code/libraries.                                                                               |
+| client\      | Contains the main client that gets loaded to a target process, mainly contains all the features, implementations, and modules. |
+| docs\        | Contains the project documentation.                                                                                            |
+| impl_gui\    | Contains GUI Implementation of Win32 GUI, DirectX, and IMGui. Allows quick creation of GUI applications.                       |
+| injector\    | Contains the injector project used for loading the client DLL to the process                                                   |
+| third_party\ | Contains 3rd-Party code and libraries.                                                                                         |
+| utils\       | Contains general purpose utility code/libraries.                                                                               |
 
 ### Setup
-* Open **patchii2.sln** in Visual Studio.
+* Make sure that the [DirectX SDK](https://www.microsoft.com) is installed
+* Project can be accessed through the solution file (**patchii2.sln**) in Visual Studio. Most of the things are already configured.
 * It is recommended to use the **Show All Files** view mode for the Solution Explorer.
 <img src="vs_showfiles.png" />
 
 ### Building
-Open **patchii2.sln** in Visual Studio, configure it to your target build, and then start the build.
+[Client](#Building-Client) • [Injector](#Building-Injector)
+
+Open the project through **patchii2.sln** in Visual Studio
+
+#### Building-Client
+1. Locate the **client** project and select it, configure it to your target build, and then start the build.
+
+#### Building-Injector
+1. Locate the **injector** project and select it
+1. Setup the binary headers by creating 2 header files **injector\binaries\bin_x86.h** and **injector\binaries\bin_x86.h**
+    * These header files are not included and are excluded from the repository as they contain binary files
+2. Dump the client DLL's into C arrays and place the binary array inside an **unsigned char** array named **client_bin**
+    * You can use tools like [HxD](https://mh-nexus.de/en/hxd/) to dump the binary files into C arrays
+    <img src="hxd_dump.png"/>
+    * **injector\binaries\bin_x86.h** / **injector\binaries\bin_x86.h** should now contain
+    ```c++
+    #pragma once
+
+    unsigned char client_bin[] = {
+	    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2E, 0x74, 0x65, 0x78,
+	    0x74, 0x00, 0x00, 0x00, 0x54, 0x71, 0x05, 0x00, 0x00, 0x10, 0x00, 0x00,
+	    0x00, 0x72, 0x05, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x60,
+	    0x2E, 0x72, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x74, 0x74, 0x01, 0x00,
+	    0x00, 0x90, 0x05, 0x00, 0x00, 0x76, 0x01, 0x00, 0x00, 0x76, 0x05, 0x00,
+        // etc...
+    }
+    ```
+    * Make sure to dump the appropriate DLL builds to the appropriate platform header (eg. **build\Release_Win32\patchii_client.dll** to **injector\binaries\bin_x86.h**).
+    * It's recommended to use client release builds.
+3. Configure it to your target build, and then start the build.
 
 ## Module-Development
-All modules are implemented in **client/modules**.
+All modules are implemented in **client\modules**.
 
 **Note: When adding or creating directories and C++ files for your module it's recommended to do it through Visual Studio (from the solution explorer)**.
 
 1. Create a directory for your module to keep the modules folder clean.
-    * eg. *"**client/modules/example_module**"*
+    * eg. *"**client\modules\example_module**"*
 2. Inside the directory you can implement your module's C++ files however you want, but it would be better to name them after your module.
-    * eg.  **client/modules/example_module/example_module.h** and **client/modules/example_module/example_module.cpp**
-3. Create your own implementation of the module base class (**patchii_module_base**) by including **client/patchii_module_base.h**.
+    * eg.  **client\modules\example_module\example_module.h** and **client\modules\example_module\example_module.cpp**
+3. Create your own implementation of the module base class (**patchii_module_base**) by including **client\patchii_module_base.h**.
     * Make sure to use the **override** keyword when you're implementing one of the functions.
     * Read [Module Interface](#Module-Interface) for extensive documentation on what each virtual function is used for.
     * Note: Some functions are optional to override.
@@ -87,8 +118,8 @@ All modules are implemented in **client/modules**.
         }
         ```
 
-4. Register the module in **client/modules/modules.cpp** by including your module's header then locate the function definition of patchii_get_registered_modules() then declare your module inside the vector array named **preload** using the **patchii_register_module(*module name*)** macro.
-    * Example (This is an example, *client/modules/modules.cpp* may change overtime and some parts are removed to make this small):
+4. Register the module in **client\modules\modules.cpp** by including your module's header then locate the function definition of patchii_get_registered_modules() then declare your module inside the vector array named **preload** using the **patchii_register_module(*module name*)** macro.
+    * Example (This is an example, *client\modules\modules.cpp* may change overtime and some parts are removed to make this small):
         ```c++
         #include "modules.h"
 
