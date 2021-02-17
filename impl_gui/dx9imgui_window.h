@@ -22,7 +22,9 @@ public:
 
 public:
 	
-	bool initialize(
+	bool import_dx9();
+
+	bool initialize_window(
 		update_fn update_callback_, imgui_draw_callback_fn imgui_draw_callback_, dxreset_callback_fn dxreset_callback_, WNDPROC wndproc_callback_,
 		void *instance, std::wstring_view classname_, UINT width, UINT height,
 		DWORD style_ = (WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX), D3DCOLOR clear_color_ = D3DCOLOR_ARGB(0, 60, 60, 60)
@@ -50,6 +52,10 @@ private:
 	bool     running        = false;
 	bool     should_render  = true;
 	D3DCOLOR clear_color;
+
+private:
+	decltype(Direct3DCreate9)                     *imported_Direct3DCreate9                     = nullptr;
+	decltype(D3DXCreateTextureFromFileInMemoryEx) *imported_D3DXCreateTextureFromFileInMemoryEx = nullptr;
 
 private:
 	update_fn              update_callback;

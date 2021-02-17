@@ -165,7 +165,6 @@
     <ClCompile Include="injector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="binaries\bin_dummy.h" />
     <ClInclude Include="binaries\bin_x64.h" />
     <ClInclude Include="binaries\bin_x86.h" />
     <ClInclude Include="binaries\client_binary.h" />

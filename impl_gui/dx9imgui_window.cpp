@@ -28,7 +28,28 @@ dx9imgui_window::~dx9imgui_window()
 {
 }
 
-bool dx9imgui_window::initialize(update_fn update_callback_, imgui_draw_callback_fn imgui_draw_callback_, dxreset_callback_fn dxreset_callback_, WNDPROC wndproc_callback_, void *instance_, std::wstring_view class_name_, UINT width, UINT height, DWORD style_, D3DCOLOR clear_color_)
+bool dx9imgui_window::import_dx9()
+{
+	HMODULE d3d9 = LoadLibraryW(L"d3d9.dll");
+	if (!d3d9)
+		return false;
+
+	HMODULE d3dx9_43 = LoadLibraryW(L"d3dx9_43.dll");
+	if (!d3dx9_43)
+		return false;
+
+	this->imported_Direct3DCreate9 = reinterpret_cast<decltype(dx9imgui_window::imported_Direct3DCreate9)>(GetProcAddress(d3d9, "Direct3DCreate9"));
+	if (!this->imported_Direct3DCreate9)
+		return false;
+
+	this->imported_D3DXCreateTextureFromFileInMemoryEx = reinterpret_cast<decltype(dx9imgui_window::imported_D3DXCreateTextureFromFileInMemoryEx)>(GetProcAddress(d3dx9_43, "D3DXCreateTextureFromFileInMemoryEx"));
+	if (!this->imported_D3DXCreateTextureFromFileInMemoryEx)
+		return false;
+
+	return true;
+}
+
+bool dx9imgui_window::initialize_window(update_fn update_callback_, imgui_draw_callback_fn imgui_draw_callback_, dxreset_callback_fn dxreset_callback_, WNDPROC wndproc_callback_, void *instance_, std::wstring_view class_name_, UINT width, UINT height, DWORD style_, D3DCOLOR clear_color_)
 {
 	
 	this->update_callback = update_callback_;
@@ -69,7 +90,7 @@ bool dx9imgui_window::initialize(update_fn update_callback_, imgui_draw_callback
 	if (!this->window)
 		return false;
 
-	this->dxdirect = Direct3DCreate9(D3D_SDK_VERSION);
+	this->dxdirect = this->imported_Direct3DCreate9(D3D_SDK_VERSION);
 
 	if (!this->dxdirect)
 		return false;
@@ -183,7 +204,7 @@ LPDIRECT3DTEXTURE9 dx9imgui_window::make_texture_from_memory(void *bin, UINT bin
 {
 	LPDIRECT3DTEXTURE9 result = nullptr;
 
-	if (D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
+	if (this->imported_D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
 	{
 		DWORD err = GetLastError();
 		return nullptr;

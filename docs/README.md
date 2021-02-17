@@ -16,7 +16,7 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 ## Features
 
 ## Usage
-* Make sure that a [DirectX 9 Runtime](https://github.com/rogueeeee/patchii2/releases/tag/directx_runtime_installer) is installed.
+* Make sure that a [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) is installed.
 * Load the compiled DLL located in **build\\*configuration*_*platform*\patchii_client.dll** followed by the appropriate build mode and target architecture to your target process.
 
 ## Development

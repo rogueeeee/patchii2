@@ -194,6 +194,15 @@ bool patchii_run()
 	std::cout << "build: " __DATE__ " " __TIME__ "\n\n";
 	console::set_color();
 
+	console::status_print stat_dx9imp("Initializing DirectX 9 imports...");
+	if (!dx9imgui_window::get().import_dx9())
+	{
+		stat_dx9imp.fail();
+		console::print_error("Failed to import DirectX 9 libraries. Make sure that DirectX 9 is installed. Refer: https://github.com/rogueeeee/patchii2#usage");
+		return false;
+	}
+	stat_dx9imp.ok();
+
 	std::cout << "Initializing patchii..."
 		"\nHandle: 0x" << globals::dll_handle;
 
@@ -210,7 +219,7 @@ bool patchii_run()
 		return false;
 	}
 	
-	if (!dx9imgui_window::get().initialize(patchii_update, patchii_draw_imgui, patchii_dxreset, patchii_wndproc, proc_mod_handle, random_wstring(), 700, 500, WS_OVERLAPPEDWINDOW))
+	if (!dx9imgui_window::get().initialize_window(patchii_update, patchii_draw_imgui, patchii_dxreset, patchii_wndproc, proc_mod_handle, random_wstring(), 700, 500, WS_OVERLAPPEDWINDOW))
 	{
 		stat_wincreate.fail();
 		return false;
