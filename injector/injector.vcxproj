@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d4f03f32-2230-45d1-a0da-df349bad1423}</ProjectGuid>
-    <RootNamespace>loader</RootNamespace>
+    <ProjectGuid>{7bcd9cca-c9ca-4fe5-8bf5-5c19f8aba784}</ProjectGuid>
+    <RootNamespace>injector</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -74,48 +74,42 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)build\obj\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>patchii_loader</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>patchii_injector</TargetName>
+    <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)build\obj\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>patchii_loader</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>patchii_injector</TargetName>
+    <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)build\obj\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>patchii_loader</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib\x64\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>patchii_injector</TargetName>
+    <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)build\obj\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>patchii_loader</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib\x64\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IntDir>$(SolutionDir)build\obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>patchii_injector</TargetName>
+    <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PATCHII_PRELOAD_AS_PROCNAME;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <UndefinePreprocessorDefinitions>PATCHII_PRELOAD_AS_MODULE</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3dx9.lib;d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,33 +118,29 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PATCHII_PRELOAD_AS_PROCNAME;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <UndefinePreprocessorDefinitions>PATCHII_PRELOAD_AS_MODULE</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3dx9.lib;d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PATCHII_PRELOAD_AS_PROCNAME;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <UndefinePreprocessorDefinitions>PATCHII_PRELOAD_AS_MODULE</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3dx9.lib;d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,28 +149,27 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PATCHII_PRELOAD_AS_PROCNAME;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <UndefinePreprocessorDefinitions>PATCHII_PRELOAD_AS_MODULE</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3dx9.lib;d3d9.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="autodetect.cpp" />
-    <ClCompile Include="loader.cpp" />
-    <ClCompile Include="load_loadlib.cpp" />
+    <ClCompile Include="injector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="autodetect.h" />
-    <ClInclude Include="load.h" />
+    <ClInclude Include="binaries\bin_dummy.h" />
+    <ClInclude Include="binaries\bin_x64.h" />
+    <ClInclude Include="binaries\bin_x86.h" />
+    <ClInclude Include="binaries\client_binary.h" />
+    <ClInclude Include="injector_return_code.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

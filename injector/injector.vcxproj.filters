@@ -15,21 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="autodetect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="load_loadlib.cpp">
+    <ClCompile Include="injector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="autodetect.h">
+    <ClInclude Include="injector_return_code.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="load.h">
+    <ClInclude Include="binaries\client_binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="binaries\bin_x64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="binaries\bin_x86.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="binaries\bin_dummy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <Windows.h>
+#include <winternl.h>
 
 struct ldr_data_table_entry
 {
@@ -25,3 +27,8 @@ public:
 };
 
 bool ldr_data_table_entry_next(ldr_data_table_entry *&dest);
+
+bool pe_validate_dosheader(void *base);
+PIMAGE_DOS_HEADER pe_get_dosheaderptr(void *base);
+PIMAGE_NT_HEADERS pe_get_ntheaderptr(void *base);
+bool pe_image_base_reloc_next(void *base, PIMAGE_BASE_RELOCATION &dest);
