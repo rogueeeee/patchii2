@@ -24,9 +24,9 @@ bool ldr_data_table_entry_next(ldr_data_table_entry *&dest)
 {
     static ldr_data_table_entry *first_entry = [] () -> auto
     {
-        #ifdef WIN32
+        #ifdef _M_IX86
             return reinterpret_cast<peb *>(__readfsdword(0x30))->ldr->entry;
-        #else
+        #elif _M_X64
             return reinterpret_cast<peb *>(__readgsqword(0x60))->ldr->entry;
         #endif
     }();
