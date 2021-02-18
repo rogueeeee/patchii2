@@ -1,4 +1,6 @@
 #include <utils/winternal.h>
+#include <utils/string_utils.h>
+
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <string>
@@ -6,6 +8,8 @@
 
 #include "injector_return_code.h"
 #include "binaries/client_binary.h"
+
+// #include "inj_utils.h"
 
 #define return_as_code(returncode) return static_cast<int>(inj_ret##::##returncode);
 
@@ -22,20 +26,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	DWORD proc_id = 0;
 	
-	#ifdef _DEBUG
+	#ifdef _DEBUG // Prevents std::stoi from overriding a custom hardcoded proc_id only in debug mode
 	if (!proc_id)
 	#endif
-	proc_id = std::stoi(lpCmdLine);
+	try
+	{
+		proc_id = std::stoi(lpCmdLine);
+	}
+	catch (std::exception ex)
+	{
+		return_as_code(PROC_ID_STOI_EXCEPTION);
+	}
 	
 	if (!proc_id)
-	{
 		return_as_code(INVALID_PROC_ID);
-	}
 	
 	HANDLE proc_open = OpenProcess(PROCESS_ALL_ACCESS, false, proc_id);
 	if (!proc_open)
 		return_as_code(FAILED_TO_OPEN_PROCESS);
-	
+
+	return_as_code(SUCCESSFUL);
+
+	#if 0 // Manual mapper code, will implement in the future
 	std::uintptr_t proc_alloc_address = reinterpret_cast<std::uintptr_t>(VirtualAllocEx(proc_open, nullptr, client_image_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
 	if (!proc_alloc_address)
 		return_as_code(FAILED_TO_ALLOCATE);
@@ -56,9 +68,35 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			if (entry_type != IMAGE_REL_BASED_HIGHLOW)
 				return_as_code(UNHANDLED_RELOCATION_TYPE);
 			
-			*reinterpret_cast<DWORD*>(client_bin + (current_reloc->VirtualAddress + (entry_array[idx] & 0x0FFF) )) += proc_alloc_address - pe_get_ntheaderptr(client_bin)->OptionalHeader.ImageBase;
+			*reinterpret_cast<DWORD*>(client_bin + (static_cast<std::uintptr_t>(current_reloc->VirtualAddress) + (entry_array[idx] & 0x0FFF) )) += proc_alloc_address - pe_get_ntheaderptr(client_bin)->OptionalHeader.ImageBase;
+		}
+	}
+
+	PIMAGE_IMPORT_DESCRIPTOR current_import_desc = nullptr;
+	while (pe_image_import_descriptor_next(client_bin, current_import_desc))
+	{
+		PIMAGE_THUNK_DATA current_orig  = nullptr;
+		PIMAGE_THUNK_DATA current_first = nullptr;
+
+		HMODULE loaded_lib = remote_LoadLibraryA(proc_open, reinterpret_cast<LPCSTR>(client_bin + current_import_desc->Name));
+		if (!loaded_lib)
+			return_as_code(LOAD_MODULE_DEPENDENCY_FAILED);
+
+
+		while (pe_image_thunk_data_next(client_bin, current_import_desc, current_orig, current_first))
+		{
+			if (IMAGE_SNAP_BY_ORDINAL(current_orig->u1.Ordinal))
+			{
+
+			}
+			else
+			{
+				
+			}
 		}
 	}
 
 	return_as_code(SUCCESSFUL);
+
+	#endif
 }

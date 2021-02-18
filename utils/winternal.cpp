@@ -33,6 +33,9 @@ bool ldr_data_table_entry_next(ldr_data_table_entry *&dest)
 
     if (!dest)
     {
+        if (!first_entry)
+            return false;
+
         dest = first_entry;
         return true;
     }
@@ -84,4 +87,41 @@ bool pe_image_base_reloc_next(void *base, PIMAGE_BASE_RELOCATION &dest)
 
     dest = next_reloc_entry;
     return true;
+}
+
+bool pe_image_import_descriptor_next(void *base, PIMAGE_IMPORT_DESCRIPTOR &dest)
+{
+    if (!dest)
+    {
+        dest = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(reinterpret_cast<std::uintptr_t>(base) + pe_get_ntheaderptr(base)->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+
+        if (!dest->Name)
+            return false;
+
+        return true;
+    }
+    
+    if (!++dest->Name)
+        return false;
+
+    return true;
+}
+
+bool pe_image_thunk_data_next(void *base, PIMAGE_IMPORT_DESCRIPTOR descriptor, PIMAGE_THUNK_DATA &dest_orig, PIMAGE_THUNK_DATA &dest_first)
+{
+    if (!dest_orig || !dest_first)
+    {
+        dest_orig  = reinterpret_cast<PIMAGE_THUNK_DATA>(reinterpret_cast<std::uintptr_t>(base) + descriptor->OriginalFirstThunk);
+        dest_first = reinterpret_cast<PIMAGE_THUNK_DATA>(reinterpret_cast<std::uintptr_t>(base) + descriptor->FirstThunk);
+
+        if (!dest_orig->u1.AddressOfData)
+            return false;
+
+        return true;
+    }
+
+    if (!++dest_orig->u1.AddressOfData)
+        return false;
+
+    return false;
 }

@@ -32,3 +32,5 @@ bool pe_validate_dosheader(void *base);
 PIMAGE_DOS_HEADER pe_get_dosheaderptr(void *base);
 PIMAGE_NT_HEADERS pe_get_ntheaderptr(void *base);
 bool pe_image_base_reloc_next(void *base, PIMAGE_BASE_RELOCATION &dest);
+bool pe_image_import_descriptor_next(void *base, PIMAGE_IMPORT_DESCRIPTOR &dest);
+bool pe_image_thunk_data_next(void *base, PIMAGE_IMPORT_DESCRIPTOR descriptor, PIMAGE_THUNK_DATA &dest_orig, PIMAGE_THUNK_DATA &dest_first);
