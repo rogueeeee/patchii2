@@ -5,11 +5,13 @@
 #include <TlHelp32.h>
 #include <string>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 
 #include "injector_return_code.h"
 #include "binaries/client_binary.h"
 
-// #include "inj_utils.h"
+#include "inj_utils.h"
 
 #define return_as_code(returncode) return static_cast<int>(inj_ret##::##returncode);
 
@@ -19,10 +21,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	
 	if (!pe_validate_dosheader(client_bin))
 		return_as_code(INVALID_DOS_HEADER);
-
-	DWORD client_image_size = pe_get_ntheaderptr(client_bin)->OptionalHeader.SizeOfImage;
-	if (!client_image_size)
-		return_as_code(INVALID_IMAGE_SIZE);
 
 	DWORD proc_id = 0;
 	
@@ -44,10 +42,31 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	HANDLE proc_open = OpenProcess(PROCESS_ALL_ACCESS, false, proc_id);
 	if (!proc_open)
 		return_as_code(FAILED_TO_OPEN_PROCESS);
+	
+	std::wstring dll_path;
+	do
+	{
+		dll_path = std::filesystem::temp_directory_path().c_str() + random_wstring() + L".dll";
+	} while(std::filesystem::exists(dll_path));
+
+	std::ofstream dll_write(dll_path, std::ios::binary | std::ios::out);
+	if (!dll_write.is_open())
+		return_as_code(FAILED_TO_OPEN_FILE);
+
+	dll_write.write(reinterpret_cast<const char *>(client_bin), sizeof(client_bin));
+	dll_write.close();
+	
+	if (!remote_LoadLibraryW(proc_open, dll_path))
+		return_as_code(FAILED_TO_REMOTE_INJECT);
 
 	return_as_code(SUCCESSFUL);
 
 	#if 0 // Manual mapper code, will implement in the future
+
+	DWORD client_image_size = pe_get_ntheaderptr(client_bin)->OptionalHeader.SizeOfImage;
+	if (!client_image_size)
+		return_as_code(INVALID_IMAGE_SIZE);
+
 	std::uintptr_t proc_alloc_address = reinterpret_cast<std::uintptr_t>(VirtualAllocEx(proc_open, nullptr, client_image_size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
 	if (!proc_alloc_address)
 		return_as_code(FAILED_TO_ALLOCATE);

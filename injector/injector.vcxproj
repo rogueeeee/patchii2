@@ -163,12 +163,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="injector.cpp" />
+    <ClCompile Include="inj_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binaries\bin_x64.h" />
     <ClInclude Include="binaries\bin_x86.h" />
     <ClInclude Include="binaries\client_binary.h" />
     <ClInclude Include="injector_return_code.h" />
+    <ClInclude Include="inj_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

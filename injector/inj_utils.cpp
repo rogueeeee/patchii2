@@ -1,10 +1,36 @@
 #include "inj_utils.h"
-
-#if 0
 #include <TlHelp32.h>
 
-#include <string>
+bool remote_LoadLibraryW(HANDLE proc_handle, std::wstring path)
+{
+    HANDLE      ll_crt     = nullptr;
+    std::size_t path_size  = (path.length() + 1) * sizeof(wchar_t);
+    bool        is_success = false;
 
+    LPVOID path_alloc = VirtualAllocEx(proc_handle, nullptr, path_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    if (!path_alloc)
+        return false;
+
+    if (!WriteProcessMemory(proc_handle, path_alloc, path.c_str(), path_size, nullptr))
+        goto LBL_FAIL_B;
+
+    ll_crt = CreateRemoteThread(proc_handle, nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&LoadLibraryW), path_alloc, NULL, nullptr);
+    if (!ll_crt)
+        goto LBL_FAIL_B;
+
+    if (WaitForSingleObject(ll_crt, 30000) & WAIT_FAILED)
+        goto LBL_FAIL_A;
+
+    is_success = true;
+    LBL_FAIL_A:
+    CloseHandle(ll_crt);
+    LBL_FAIL_B:
+    VirtualFreeEx(proc_handle, path_alloc, NULL, MEM_RELEASE);
+
+    return is_success;
+}
+
+#if 0
 HMODULE remote_LoadLibraryA(HANDLE proc_handle, LPCSTR file_name)
 {
     SIZE_T fname_alloc_size = strlen(file_name) + 1;
@@ -109,7 +135,7 @@ FARPROC remote_GetProcAddress(HANDLE proc_handle, HMODULE mod_handle, LPCSTR pro
     #ifdef _M_IX86
         *reinterpret_cast<decltype(GetProcAddress) **>(shellcode + scoff_GetProcAddress) = &GetProcAddress;
     #else
-        *reinterpret_cast<std::uint32_t*>(shellcode + scoff_GetProcAddress) = (shellcode_alloc + scoff_GetProcAddress + 0x5) - reinterpret_cast<std::uintptr_t>(&GetProcAddress);
+        // *reinterpret_cast<std::int32_t*>(shellcode + scoff_GetProcAddress) = reinterpret_cast<std::uintptr_t>(&GetProcAddress) - reinterpret_cast<std::int32_t>(shellcode_alloc + scoff_GetProcAddress + 0x5);
     #endif
 
     if (!WriteProcessMemory(proc_handle, reinterpret_cast<LPVOID>(shellcode_alloc), shellcode, sizeof(shellcode), nullptr))

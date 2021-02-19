@@ -18,6 +18,9 @@
     <ClCompile Include="injector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inj_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="injector_return_code.h">
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="binaries\bin_x86.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inj_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
