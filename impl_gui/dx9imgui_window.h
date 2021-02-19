@@ -56,19 +56,16 @@ private:
 private:
 	decltype(Direct3DCreate9)                     *imported_Direct3DCreate9                     = nullptr;
 	decltype(D3DXCreateTextureFromFileInMemoryEx) *imported_D3DXCreateTextureFromFileInMemoryEx = nullptr;
+	static LRESULT WINAPI wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 private:
 	update_fn              update_callback;
 	imgui_draw_callback_fn imgui_draw_callback;
 	dxreset_callback_fn    dxreset_callback;
-
-public:
 	WNDPROC                wndproc_callback;
 
-public:
-	D3DPRESENT_PARAMETERS present_params = {};
-
 private:
+	D3DPRESENT_PARAMETERS present_params = {};
 	LPDIRECT3D9           dxdirect   = nullptr;
 	LPDIRECT3DDEVICE9     dxdevice   = nullptr;
 	HWND                  window     = nullptr;
