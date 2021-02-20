@@ -17,7 +17,13 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 
 ## Usage
 * Requires [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) to be installed.
-1. Load the compiled DLL located in **build\\*configuration*_*platform*\patchii_client.dll** followed by the appropriate build mode and target architecture to your target process.
+1. Run the patchii loader
+2. Select the target process
+    * An "*auto*" button is available to automatically detect the process name based off a predefined list
+3. Set the client platform to use
+    * If the target is a 32 bit application use x86
+    * If the target is a 64 bit application use x64
+4. Press Load
 
 ## Development
 [Repository Branches](#Repository-Branches) • [Prerequisite](#Prerequisite) • [Project Structure](#Project-Structure) • [Setup](#Setup) • [Building](#Building)
@@ -49,9 +55,27 @@ n/a
 ![](vs_showfiles.png)
 
 ### Building
-[Client](#Building-Client) • [Injector](#Building-Injector)
+[Auto Build](#Auto-Build) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
 
-Open the project through **patchii2.sln** in Visual Studio
+#### Auto-Build
+A python script is provided to automatically setup the required binary headers and build the entire project.
+* Prerequisits
+    * [Python 3](https://www.python.org/downloads/windows/) must be installed.
+    * The **msbuild** directory should be included in your environment's path variable
+1. Open a command prompt
+2. Change directory into the folder
+
+    ```bat
+    cd /d <some directory>\patchii2
+    ```
+
+3. Run the build script
+
+    ```bat
+    py autobuild.py
+    ```
+
+4. The final compiled binaries (patchii loader) should be located at **build\final**
 
 #### Building-Client
 1. Locate the **client** project and select it, configure it to your target build, and then start the build.

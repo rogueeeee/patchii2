@@ -14,13 +14,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     {
         globals::dll_handle = reinterpret_cast<HMODULE>(hmod);
         bool console_init_result = console::initialize();
-
+        
         if (!console_init_result)
         {
             MessageBoxW(nullptr, L"Failed to initialize console", L"", MB_ICONERROR);
             goto LBL_IN_INIT_UNLOAD;
         }
-
+        
         console::print_warning("Do not close this window until patchii is completely unloaded.");
 
         patchii_run();
