@@ -58,12 +58,12 @@ Open the project through **patchii2.sln** in Visual Studio
 
 #### Building-Injector
 1. Locate the **injector** project and select it.
-1. Setup the binary headers by creating 2 header files **injector\binaries\bin_x86.h** and **injector\binaries\bin_x64.h**
+2. Setup the binary headers by creating 2 header files **injector\binaries\bin_x86.h** and **injector\binaries\bin_x64.h**
     * These header files are not included and are excluded from the repository as they contain binaries.
-2. Dump the client DLL's into C arrays and place the binary array inside an **unsigned char** array named **client_bin**
-    * You can use tools like [HxD](https://mh-nexus.de/en/hxd/) to dump the binary files into C arrays
-    ![](hxd_dump.png)
+3. Dump the client DLL's into C arrays and place the binary array inside an **unsigned char** array named **client_bin**
+    * [Dumping to binary using HxD](#Dumping-to-binary-using-HxD)
     * **injector\binaries\bin_x86.h** and **injector\binaries\bin_x64.h** should now contain something similar to:
+    
         ```c++
         #pragma once
 
@@ -81,7 +81,54 @@ Open the project through **patchii2.sln** in Visual Studio
 
     * Make sure to dump the appropriate DLL builds to the appropriate platform header (eg. **build\Release_Win32\patchii_client.dll** to **injector\binaries\bin_x86.h**).
     * It's recommended to use client release builds.
-3. Configure it to your target build, and then start the build.
+4. Configure it to your target build, and then start the build.
+
+#### Building-Loader
+1. Locate the **loader** project and select it.
+2. Setup the binary headers by creating 2 header files **loader\binaries\inj_binary_x86.h** and **loader\binaries\inj_binary_x64.h**
+    * These header files are not included and are excluded from the repository as they contain binaries.
+3. Dump the injector executable into C arrays and place the binary array inside an **unsigned char** array named **inj_bin_x86** for **loader\binaries\inj_binary_x86.h** and **inj_bin_x64** for **loader\binaries\inj_binary_x64.h**
+    * [Dumping to binary using HxD](#Dumping-to-binary-using-HxD)
+    
+    * **loader\binaries\inj_binary_x86.h** and **loader\binaries\inj_binary_x64.h** should now contain something similar to:
+    
+        ```c++
+        #pragma once
+
+        unsigned char inj_bin_x86[] = {
+            // This is an example, the dumped hex arrays will be different for different cases
+	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2E, 0x74, 0x65, 0x78,
+	        0x74, 0x00, 0x00, 0x00, 0x54, 0x71, 0x05, 0x00, 0x00, 0x10, 0x00, 0x00,
+	        0x00, 0x72, 0x05, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x60,
+	        0x2E, 0x72, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x74, 0x74, 0x01, 0x00,
+	        0x00, 0x90, 0x05, 0x00, 0x00, 0x76, 0x01, 0x00, 0x00, 0x76, 0x05, 0x00,
+            // etc...
+        }
+        ```
+
+        ```c++
+        #pragma once
+
+        unsigned char inj_bin_x64[] = {
+            // This is an example, the dumped hex arrays will be different for different cases
+	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2E, 0x74, 0x65, 0x78,
+	        0x74, 0x00, 0x00, 0x00, 0x54, 0x71, 0x05, 0x00, 0x00, 0x10, 0x00, 0x00,
+	        0x00, 0x72, 0x05, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x60,
+	        0x2E, 0x72, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x74, 0x74, 0x01, 0x00,
+	        0x00, 0x90, 0x05, 0x00, 0x00, 0x76, 0x01, 0x00, 0x00, 0x76, 0x05, 0x00,
+            // etc...
+        }
+        ```
+
+    * Make sure to dump the appropriate DLL builds to the appropriate platform header (eg. **build\Release_Win32\patchii_client.dll** to **injector\binaries\bin_x86.h**).
+    * It's recommended to use client release builds.
+4. Configure it to your target build, and then start the build.
+
+##### Dumping-to-binary-using-HxD
+* You can use tools like [HxD](https://mh-nexus.de/en/hxd/) to dump the binary files into C arrays
+    ![](hxd_dump.png)
 
 ## Module-Development
 All modules are implemented in **client\modules**.
