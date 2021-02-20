@@ -29,7 +29,10 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 [Repository Branches](#Repository-Branches) • [Prerequisite](#Prerequisite) • [Project Structure](#Project-Structure) • [Setup](#Setup) • [Building](#Building)
 
 ### Repository-Branches
-n/a
+| Name                                                        | Description                                               |
+| ----------------------------------------------------------- | --------------------------------------------------------- |
+| [master](https://github.com/rogueeeee/patchii2/tree/master) | Main branch of the repo where all changes are committed   |
+| [stable](https://github.com/rogueeeee/patchii2/tree/stable) | Branch where only stable states of the repo is committed  |
 
 ### Prerequisite
 * Windows
@@ -49,7 +52,6 @@ n/a
 | utils\       | Contains general purpose utility code/libraries.                                                                               |
 
 ### Setup
-* Make sure that the [DirectX SDK](https://www.microsoft.com) is installed
 * Project can be accessed through the solution file (**patchii2.sln**) in Visual Studio. Most of the things are already configured.
 * It is recommended to use the **Show All Files** view mode for the Solution Explorer.
 ![](vs_showfiles.png)
@@ -57,9 +59,11 @@ n/a
 ### Building
 [Auto Build](#Auto-Build) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
 
+You can use the stable branch of the repo for stability
+
 #### Auto-Build
 A python script is provided to automatically setup the required binary headers and build the entire project.
-* Prerequisits
+* Prerequisite:
     * [Python 3](https://www.python.org/downloads/windows/) must be installed.
     * The **msbuild** directory should be included in your environment's path variable
 1. Open a command prompt
