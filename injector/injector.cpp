@@ -8,17 +8,16 @@
 #include <filesystem>
 #include <fstream>
 
-#include "injector_return_code.h"
-#include "binaries/client_binary.h"
-
 #include "inj_utils.h"
+#include "injector_return_code.h"
+
+#include "binaries/client_binary.h"
+static_assert(sizeof(client_bin) >= sizeof(IMAGE_DOS_HEADER), "Injector binary headers was not implemented. Refer: https://github.com/rogueeeee/patchii2#Building-Injector");
 
 #define return_as_code(returncode) return static_cast<int>(inj_ret##::##returncode);
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
-{
-	static_assert(sizeof(client_bin) >= sizeof(IMAGE_DOS_HEADER), "Binary headers was not implemented. Refer: https://github.com/rogueeeee/patchii2#Building-Injector");
-	
+{	
 	if (!pe_validate_dosheader(client_bin))
 		return_as_code(INVALID_DOS_HEADER);
 
@@ -33,6 +32,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 	catch (std::exception ex)
 	{
+		MessageBoxW(nullptr, (std::wstring(L"patchii injector\n\nPROC_ID_STOI_EXCEPTION\n\n") + lpCmdLine).c_str(), L"", MB_ICONERROR);
 		return_as_code(PROC_ID_STOI_EXCEPTION);
 	}
 	
