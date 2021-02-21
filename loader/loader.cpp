@@ -5,8 +5,8 @@
 #include <thread>
 #include <filesystem>
 #include <fstream>
-#include <utils/string_utils.h>
-#include <impl_gui/dx9imgui_window.h>
+#include <string_utils.h>
+#include <dx9imgui_window.h>
 #include <patchii_version.h>
 
 #include <injector/injector_return_code.h>

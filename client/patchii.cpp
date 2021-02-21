@@ -2,10 +2,10 @@
 #include "globals.h"
 
 #include <Windows.h>
-#include <utils/console.h>
-#include <utils/string_utils.h>
-#include <utils/arch.h>
-#include <impl_gui/dx9imgui_window.h>
+#include <console.h>
+#include <string_utils.h>
+#include <arch.h>
+#include <dx9imgui_window.h>
 
 #include <patchii_version.h>
 

@@ -1,5 +1,5 @@
-#include <utils/winternal.h>
-#include <utils/string_utils.h>
+#include <winternal.h>
+#include <string_utils.h>
 
 #include <Windows.h>
 #include <TlHelp32.h>

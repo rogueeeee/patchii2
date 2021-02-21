@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include <utils/console.h>
+#include <console.h>
 
 #include "globals.h"
 #include "patchii.h"

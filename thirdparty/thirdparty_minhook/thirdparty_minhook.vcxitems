@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{516fbbf3-3403-4506-bf86-c9b52080c1c6}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)buffer.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hde\hde32.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hde\hde64.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hook.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)trampoline.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)buffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hde\hde32.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hde\hde64.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hde\pstdint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hde\table32.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hde\table64.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MinHook.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)trampoline.h" />
+  </ItemGroup>
+</Project>
