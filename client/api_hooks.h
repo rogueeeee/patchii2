@@ -16,6 +16,7 @@ struct api_hook_flags
 
 struct api_hook_event
 {
+	void *return_address { 0 };
 	union
 	{
 		void          *ptr;

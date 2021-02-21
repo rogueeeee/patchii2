@@ -17,6 +17,7 @@ void patchii_get_registered_modules(std::vector<patchii_module_base *> &dest)
 	std::vector<std::pair<patchii_module_base *, const char *>> preload =
 	{
 		// Platform agnostic modules - Place module here if it works for both x86 and x64
+		patchii_register_module(module_utilities)
 
 		#ifdef _M_IX86 // x86 modules - Place module here if it only works for x86
 		#elif _M_X64   // x64 modules - Place module here if it only works for x64

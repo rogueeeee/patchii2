@@ -225,14 +225,11 @@ bool patchii_run()
 	std::cout << "build: " __DATE__ " " __TIME__ "\n\n";
 	console::set_color();
 
-	console::status_print stat_dx9imp("Initializing DirectX 9 imports...");
-	if (!dx9imgui_window::get().import_dx9())
+	if (!console::status_print("Initializing DirectX 9 imports...").autoset(dx9imgui_window::get().import_dx9()))
 	{
-		stat_dx9imp.fail();
 		console::print_error("Failed to import DirectX 9 libraries. Make sure that DirectX 9 is installed. Refer: https://github.com/rogueeeee/patchii2#usage");
 		return false;
 	}
-	stat_dx9imp.ok();
 
 	std::cout << "\nInitializing patchii...";
 	
@@ -254,13 +251,8 @@ bool patchii_run()
 	
 	stat_wincreate.ok();
 	
-	console::status_print stat_mhinit("Initializing MinHook...");
-	if (MH_Initialize() != MH_OK)
-	{
-		stat_mhinit.fail();
+	if (!console::status_print("Initializing MinHook...").autoset(MH_Initialize() == MH_OK))
 		return false;
-	}
-	stat_mhinit.ok();
 	
 	std::cout << "\nCreating API hooks...";
 	patchii_apihooks_enable();

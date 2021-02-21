@@ -123,12 +123,14 @@ console::status_print::~status_print()
 	this->custom(" LOST ", console::color::GRAY);
 }
 
-void console::status_print::autoset(bool result)
+bool console::status_print::autoset(bool result)
 {
 	if (result)
 		this->ok();
 	else
 		this->fail();
+
+	return result;
 }
 
 void console::status_print::ok()

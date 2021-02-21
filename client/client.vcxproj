@@ -194,6 +194,7 @@
     <ClCompile Include="api_hooks.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="modules\modules.cpp" />
+    <ClCompile Include="modules\module_utilities\module_utilities.cpp" />
     <ClCompile Include="patchii.cpp" />
     <ClCompile Include="patchii_module_base.cpp" />
   </ItemGroup>

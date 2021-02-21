@@ -8,7 +8,48 @@
 #include <winternal.h>
 #include <client/globals.h>
 
-static std::unordered_map<const char *, std::pair<void*, std::vector<void*>>> api_hooks; // api_hooks[function name] | first = original | second = callbacks
+struct api_hook_container_t
+{
+	union
+	{
+		void *handle;
+		void *target;
+		void *fnentry;
+	};
+
+	std::vector<void *> callbacks;
+	std::vector<void *> callback_add_queue;
+	std::vector<void *> callback_remove_queue;
+
+	void update_callbacks()
+	{
+		if (!callback_add_queue.empty())
+		{
+			for (auto newcb : callback_add_queue)
+				callbacks.push_back(newcb);
+			callback_add_queue.clear();
+		}
+
+		if (!callback_remove_queue.empty())
+		{
+			std::vector<void *> new_callbacks;
+			for (auto currcb : callbacks)
+			{
+				for (auto remcb : callback_remove_queue)
+					if (remcb == currcb)
+						goto LBL_NEXT_ITERATION;
+
+				new_callbacks.push_back(currcb);
+				LBL_NEXT_ITERATION:;
+			}
+
+			callbacks = new_callbacks;
+			callback_remove_queue.clear();
+		}
+	}
+};
+
+static std::unordered_map<const char *, api_hook_container_t> api_hooks; // api_hooks[function name] | first = original | second = callbacks
 static void *end_of_dll   = nullptr;
 static void *start_of_dll = nullptr;
 
@@ -18,15 +59,16 @@ static void *start_of_dll = nullptr;
 static decltype(MessageBoxA) *o_MessageBoxA = nullptr;
 int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT utype)
 {
+	using callback_t = void(__stdcall*)(api_hook_event &, HWND &, LPCSTR &, LPCSTR &, UINT &);
+	api_hook_container_t &container = api_hooks["MessageBoxA"];
+
 	if (filter_api_calls())
 		return o_MessageBoxA(hwnd, lptext, lpcaption, utype);
+	
+	container.update_callbacks();
 
-	using callback_t = void(*)(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, LPCSTR &lpcaption, UINT &utype);
-	static std::vector<void*> &callbacks = api_hooks["MessageBoxA"].second;
-
-	api_hook_event e;
-
-	for (auto callback : callbacks)
+	api_hook_event e { _ReturnAddress() };
+	for (auto callback : container.callbacks)
 	{
 		reinterpret_cast<callback_t>(callback)(e, hwnd, lptext, lpcaption, utype);
 
@@ -47,8 +89,8 @@ void create_apihook_helper(const wchar_t *mod, const char *proc, void *hk, void 
 	console::status_print stat_hooking(std::string("Hooking: ") + proc);
 	if (void *target_api; MH_CreateHookApiEx(mod, proc, hk, original, &target_api) == MH_OK)
 	{
-		api_hooks[proc].first  = target_api;
-		api_hooks[proc].second = {};
+		api_hooks[proc].handle    = target_api;
+		api_hooks[proc].callbacks = {};
 		stat_hooking.ok();
 	}
 	else
@@ -75,7 +117,7 @@ bool patchii_apihooks_disable()
 	for (auto hooked_api : api_hooks)
 	{
 		console::status_print stat_hkdisable(std::string("Disabling API Hook: ") + hooked_api.first);
-		stat_hkdisable.autoset(MH_DisableHook(hooked_api.second.first) == MH_OK);
+		stat_hkdisable.autoset(MH_DisableHook(hooked_api.second.handle) == MH_OK);
 	}
 
 	return true;
@@ -86,6 +128,8 @@ bool patchii_apihooks_register(const char *api_name, void *callback)
 	if (api_hooks.find(api_name) == api_hooks.end())
 		return false;
 
+	api_hooks[api_name].callback_add_queue.push_back(callback);
+
 	return true;
 }
 
@@ -94,6 +138,7 @@ bool patchii_apihooks_unregister(const char *api_name, void *callback)
 	if (api_hooks.find(api_name) == api_hooks.end())
 		return false;
 
+	api_hooks[api_name].callback_remove_queue.push_back(callback);
 
 	return true;
 }

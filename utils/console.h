@@ -41,7 +41,7 @@ namespace console
 		~status_print();
 
 	public:
-		void autoset(bool result);
+		bool autoset(bool result);
 		void ok();
 		void fail();
 		void custom(const char status[7], console::color foreground, console::color background = console::color::BLACK);
