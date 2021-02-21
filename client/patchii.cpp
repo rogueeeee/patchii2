@@ -21,12 +21,12 @@ enum class e_close_mode
 
 static bool patchii_about_window_visible = false;
 static bool patchii_is_hidden            = false;
-static bool patchii_ufocus_cpu_limiter   = true;
+static bool patchii_ufocus_cpu_limiter   = false;
 static bool patchii_ufocus_no_render     = false;
 static int  patchii_close_mode           = static_cast<int>(e_close_mode::HIDE);
 static bool patchii_should_limit_cpu     = false;
 
-static std::vector<patchii_module_base *> patchii_modules;
+static std::vector<patchii_module_base *> patchii_modules {};
 
 LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -112,7 +112,7 @@ void patchii_draw_imgui()
 
 		ImGui::Separator();
 
-		if (ImGui::MenuItem("Module"))
+		if (ImGui::BeginMenu("Module"))
 		{
 			for (auto mod : patchii_modules)
 			{
@@ -130,10 +130,10 @@ void patchii_draw_imgui()
 					}
 
 					mod->draw_imgui_module_options();
-
 					ImGui::EndMenu();
 				}
 			}
+			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("Tools"))
@@ -212,12 +212,8 @@ void patchii_update()
 void patchii_dxreset()
 {
 	for (auto mod : patchii_modules)
-	{
 		if (mod->is_loaded())
 			mod->dxreset();
-
-		delete mod;
-	}
 }
 
 bool patchii_run()
@@ -238,7 +234,7 @@ bool patchii_run()
 	stat_dx9imp.ok();
 
 	std::cout << "\nInitializing patchii..."
-		"\nHandle: 0x" << globals::dll_handle;
+				 "\nHandle: 0x" << globals::dll_handle;
 	
 	console::status_print stat_wincreate("Creating window...");
 
@@ -258,9 +254,6 @@ bool patchii_run()
 	
 	stat_wincreate.ok();
 	
-	std::cout << "\nLoading modules...";
-	patchii_modules = patchii_get_registered_modules();
-	
 	console::status_print stat_mhinit("Initializing MinHook...");
 	if (MH_Initialize() != MH_OK)
 	{
@@ -269,10 +262,13 @@ bool patchii_run()
 	}
 	stat_mhinit.ok();
 	
-	std::cout << "Creating API hooks...";
+	std::cout << "\nCreating API hooks...";
 	patchii_apihooks_enable();
 
-	std::cout << "\Running patchii...";
+	std::cout << "\nRunning patchii...";
+
+	std::cout << "\nLoading modules...";
+	patchii_get_registered_modules(patchii_modules);
 
 	// Hide the console window at this point as it is not as necessary
 	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_HIDE);

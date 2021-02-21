@@ -3,4 +3,4 @@
 #include <vector>
 #include <client/patchii_module_base.h>
 
-std::vector<patchii_module_base *> patchii_get_registered_modules();
+void patchii_get_registered_modules(std::vector<patchii_module_base *> &dest);
