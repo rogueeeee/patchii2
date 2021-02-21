@@ -6,9 +6,10 @@
 #include <string_utils.h>
 #include <arch.h>
 #include <dx9imgui_window.h>
-
+#include <MinHook.h>
 #include <patchii_version.h>
 
+#include "api_hooks.h"
 #include "modules/modules.h"
 #include "bin_header/patchii_img_128x201.h"
 
@@ -78,16 +79,10 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void patchii_draw_window_about()
 {
-	static LPDIRECT3DTEXTURE9 patchii_image = patchii_image = dx9imgui_window::get().make_texture_from_memory(patchii_img_bin, sizeof(patchii_img_bin), 128, 201);
-
 	if (ImGui::Begin("About", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize))
 	{
-		if (patchii_image)
-		{
+		if (static LPDIRECT3DTEXTURE9 patchii_image = nullptr; patchii_image || (patchii_image = dx9imgui_window::get().make_texture_from_memory(patchii_img_bin, sizeof(patchii_img_bin), 128, 201)) )
 			ImGui::Image(patchii_image, ImVec2{ 128.f, 201.f });
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("by fantastiic\nhttps://www.deviantart.com/fantastiic/art/Chibi-Patchouli-Knownledge-Touhou-305044472");
-		}
 
 		ImGui::SameLine();
 		ImGui::Text(
@@ -244,10 +239,7 @@ bool patchii_run()
 
 	std::cout << "\nInitializing patchii..."
 		"\nHandle: 0x" << globals::dll_handle;
-
-	std::cout << "\nLoading modules...";
-	patchii_modules = patchii_get_registered_modules();
-
+	
 	console::status_print stat_wincreate("Creating window...");
 
 	HMODULE proc_mod_handle = GetModuleHandleW(NULL);
@@ -265,6 +257,22 @@ bool patchii_run()
 	}
 	
 	stat_wincreate.ok();
+	
+	std::cout << "\nLoading modules...";
+	patchii_modules = patchii_get_registered_modules();
+	
+	console::status_print stat_mhinit("Initializing MinHook...");
+	if (MH_Initialize() != MH_OK)
+	{
+		stat_mhinit.fail();
+		return false;
+	}
+	stat_mhinit.ok();
+	
+	std::cout << "Creating API hooks...";
+	patchii_apihooks_enable();
+
+	std::cout << "\Running patchii...";
 
 	// Hide the console window at this point as it is not as necessary
 	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_HIDE);
@@ -284,6 +292,12 @@ bool patchii_run()
 	}
 
 	patchii_modules.clear();
+
+	std::cout << "\nDisabling API hooks...";
+	patchii_apihooks_disable();
+
+	std::cout << "\nUninitializing MinHook...";
+	MH_Uninitialize();
 
 	std::cout << "\nPatchii has been unloaded";
 

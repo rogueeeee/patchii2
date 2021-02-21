@@ -12,7 +12,7 @@ class dx9imgui_window
 {
 	using imgui_draw_callback_fn   = void(*)(void);
 	using update_fn                = void(*)(void);
-	using dxreset_callback_fn        = void(*)(void);
+	using dxreset_callback_fn      = void(*)(void);
 
 public:
 	dx9imgui_window();

@@ -59,6 +59,7 @@
     <Import Project="..\utils\utils.vcxitems" Label="Shared" />
     <Import Project="..\impl_gui\impl_gui.vcxitems" Label="Shared" />
     <Import Project="..\thirdparty\thirdparty_imgui\thirdparty_imgui.vcxitems" Label="Shared" />
+    <Import Project="..\thirdparty\thirdparty_minhook\thirdparty_minhook.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -190,12 +191,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="api_hooks.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="modules\modules.cpp" />
     <ClCompile Include="patchii.cpp" />
     <ClCompile Include="patchii_module_base.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="api_hooks.h" />
     <ClInclude Include="bin_header\patchii_img_128x201.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="modules\modules.h" />

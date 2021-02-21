@@ -27,6 +27,9 @@
     <ClCompile Include="patchii_module_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="api_hooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patchii.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bin_header\patchii_img_128x201.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="api_hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

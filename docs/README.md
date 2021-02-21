@@ -48,7 +48,7 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 | impl_gui\    | Contains GUI Implementation of Win32 GUI, DirectX, and IMGui. Allows quick creation of GUI applications.                       |
 | injector\    | Contains the injector project used for loading the client DLL to the process                                                   |
 | loader\      | Contains the loader project used for selecting the target process and deploying the appropriate injector for the target        |
-| third_party\ | Contains 3rd-Party code and libraries.                                                                                         |
+| thirdparty\  | Contains 3rd-Party code and libraries.                                                                                         |
 | utils\       | Contains general purpose utility code/libraries.                                                                               |
 
 ### Setup
