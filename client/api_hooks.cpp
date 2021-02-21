@@ -1,19 +1,69 @@
 #include "api_hooks.h"
-
+#include <Windows.h>
 #include <unordered_map>
 #include <vector>
+#include <console.h>
+#include <MinHook.h>
 
-static std::unordered_map<const char *, std::vector<void*>> api_hooks;
+static std::unordered_map<const char *, std::pair<void*, std::vector<void*>>> api_hooks; // api_hooks[function name] | first = original | second = callbacks
 
+static decltype(MessageBoxA) *o_MessageBoxA = nullptr;
+int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT utype)
+{
+	using callback_t = void(*)(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, LPCSTR &lpcaption, UINT &utype);
+	static std::vector<void*> &callbacks = api_hooks["MessageBoxA"].second;
 
+	api_hook_event e;
+
+	for (auto callback : callbacks)
+	{
+		reinterpret_cast<callback_t>(callback)(e, hwnd, lptext, lpcaption, utype);
+
+		if (e.flags & api_hook_flags::END)
+			break;
+	}
+
+	int result = 0;
+	if (~e.flags & api_hook_flags::DONT_CALL_ORIGINAL)
+		result = o_MessageBoxA(hwnd, lptext, lpcaption, utype);
+
+	return (e.flags & api_hook_flags::USE_EVENT_RETURN) ? e.ret_val.i32 : result;
+}
+
+#define m_create_apihook_helper(mod, function) create_apihook_helper(mod, #function, &hk_##function, reinterpret_cast<void **>(&o_##function))
+void create_apihook_helper(const wchar_t *mod, const char *proc, void *hk, void **original)
+{
+	console::status_print stat_hooking(std::string("Hooking: ") + proc);
+	if (void *target_api; MH_CreateHookApiEx(mod, proc, hk, original, &target_api) == MH_OK)
+	{
+		api_hooks[proc].first  = target_api;
+		api_hooks[proc].second = {};
+		stat_hooking.ok();
+	}
+	else
+	{
+		stat_hooking.fail();
+	}
+}
 
 bool patchii_apihooks_enable()
 {
+	m_create_apihook_helper(L"User32.dll", MessageBoxA);
+	
+	console::status_print stat_commitapi("Committing all API hooks");
+	stat_commitapi.autoset(MH_EnableHook(MH_ALL_HOOKS) == MH_OK);
+
 	return true;
 }
 
 bool patchii_apihooks_disable()
 {
+	for (auto hooked_api : api_hooks)
+	{
+		console::status_print stat_hkdisable(std::string("Disabling API Hook: ") + hooked_api.first);
+		stat_hkdisable.autoset(MH_DisableHook(hooked_api.second.first) == MH_OK);
+	}
+
 	return true;
 }
 

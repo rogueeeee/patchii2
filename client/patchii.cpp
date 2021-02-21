@@ -116,9 +116,10 @@ void patchii_draw_imgui()
 		{
 			for (auto mod : patchii_modules)
 			{
-				if (ImGui::BeginMenu(mod->name.c_str()))
+				bool is_loaded = mod->is_loaded();
+				if (ImGui::BeginMenu( ((is_loaded ? "[O] " : "[X] ") + mod->name).c_str() ))
 				{
-					if (mod->is_loaded())
+					if (is_loaded)
 					{
 						if (ImGui::MenuItem("Unload"))
 							mod->unload();
@@ -292,7 +293,8 @@ bool patchii_run()
 	std::cout << "\nDisabling API hooks...";
 	patchii_apihooks_disable();
 
-	std::cout << "\nUninitializing MinHook...";
+	std::cout << "\nShutting down MinHook...";
+	MH_DisableHook(MH_ALL_HOOKS);
 	MH_Uninitialize();
 
 	std::cout << "\nPatchii has been unloaded";
