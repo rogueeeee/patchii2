@@ -9,8 +9,8 @@
 
 #include <patchii_version.h>
 
-#include "ui/ui.h"
 #include "modules/modules.h"
+#include "bin_header/patchii_img_128x201.h"
 
 enum class e_close_mode
 {
@@ -18,10 +18,12 @@ enum class e_close_mode
 	HIDE
 };
 
-static bool         patchii_is_hidden          = false;
-static bool         patchii_ufocus_cpu_limiter = true;
-static bool         patchii_ufocus_no_render   = false;
-static int          patchii_close_mode         = static_cast<int>(e_close_mode::HIDE);
+static bool patchii_about_window_visible = false;
+static bool patchii_is_hidden            = false;
+static bool patchii_ufocus_cpu_limiter   = true;
+static bool patchii_ufocus_no_render     = false;
+static int  patchii_close_mode           = static_cast<int>(e_close_mode::HIDE);
+static bool patchii_should_limit_cpu     = false;
 
 static std::vector<patchii_module_base *> patchii_modules;
 
@@ -48,6 +50,22 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			break;
 		}
 
+		case WM_ACTIVATE:
+		{
+			if (patchii_ufocus_cpu_limiter || patchii_ufocus_no_render)
+			{
+				static HWND wnd_handle = dx9imgui_window::get().get_wnd_handle();
+				bool is_focused = GetForegroundWindow() == wnd_handle;
+
+				patchii_should_limit_cpu = !is_focused && patchii_ufocus_cpu_limiter;
+
+				if (patchii_ufocus_no_render)
+					dx9imgui_window::get().render_toggle(is_focused);
+			}
+
+			break;
+		}
+
 		case WM_DESTROY:
 		{
 			PostQuitMessage(0);
@@ -56,6 +74,37 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	}
 
 	return FALSE;
+}
+
+void patchii_draw_window_about()
+{
+	static LPDIRECT3DTEXTURE9 patchii_image = patchii_image = dx9imgui_window::get().make_texture_from_memory(patchii_img_bin, sizeof(patchii_img_bin), 128, 201);
+
+	if (ImGui::Begin("About", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize))
+	{
+		if (patchii_image)
+		{
+			ImGui::Image(patchii_image, ImVec2{ 128.f, 201.f });
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("by fantastiic\nhttps://www.deviantart.com/fantastiic/art/Chibi-Patchouli-Knownledge-Touhou-305044472");
+		}
+
+		ImGui::SameLine();
+		ImGui::Text(
+			PATCHII_DESCRIPTION "\n"
+			"\n"
+			"Dear IMGui - ocornut\n"
+			"MinHook - TsudaKageyu\n"
+			"\n"
+		);
+
+		ImGui::Text("Repository:");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4{ .67f, .84f, .90f, 1.f }, "https://github.com/rogueeeee/patchii2");
+		if (ImGui::IsItemClicked())
+			ShellExecuteW(NULL, L"open", L"https://github.com/rogueeeee/patchii2", nullptr, nullptr, SW_SHOW);
+	}
+	ImGui::End();
 }
 
 void patchii_draw_imgui()
@@ -134,20 +183,19 @@ void patchii_draw_imgui()
 		}
 
 		if (ImGui::MenuItem("About"))
-			ui::about.toggle();
+			patchii_about_window_visible ^= true;
 
 		if (ImGui::MenuItem("Unload"))
 			dx9imgui_window::get().start_dispose();
 	}
 	ImGui::EndMainMenuBar();
 
+	if (patchii_about_window_visible)
+		patchii_draw_window_about();
+
 	for (auto mod : patchii_modules)
 		if (mod->is_loaded())
 			mod->draw_imgui();
-
-	for (auto ui_wnd : patchii_imguiwindow::instances)
-		if (ui_wnd->visible)
-			ui_wnd->imgui_draw_callback();
 }
 
 void patchii_update()
@@ -161,18 +209,9 @@ void patchii_update()
 	for (auto mod : patchii_modules)
 		if (mod->is_loaded())
 			mod->update();
-
-	if (patchii_ufocus_cpu_limiter || patchii_ufocus_no_render)
-	{
-		static HWND wnd_handle = dx9imgui_window::get().get_wnd_handle();
-		bool is_focused = GetForegroundWindow() == wnd_handle;
-
-		if (!is_focused && patchii_ufocus_cpu_limiter)
-			Sleep(100);
-
-		if (patchii_ufocus_no_render)
-			dx9imgui_window::get().render_toggle(is_focused);
-	}
+	
+	if (patchii_should_limit_cpu)
+		Sleep(100);
 }
 
 void patchii_dxreset()
@@ -203,7 +242,7 @@ bool patchii_run()
 	}
 	stat_dx9imp.ok();
 
-	std::cout << "Initializing patchii..."
+	std::cout << "\nInitializing patchii..."
 		"\nHandle: 0x" << globals::dll_handle;
 
 	std::cout << "\nLoading modules...";

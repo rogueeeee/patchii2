@@ -192,18 +192,15 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="modules\modules.cpp" />
-    <ClCompile Include="patchii_imgui_window.cpp" />
     <ClCompile Include="patchii.cpp" />
     <ClCompile Include="patchii_module_base.cpp" />
-    <ClCompile Include="ui\about.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bin_header\patchii_img_128x201.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="modules\modules.h" />
-    <ClInclude Include="patchii_imgui_window.h" />
     <ClInclude Include="patchii.h" />
     <ClInclude Include="patchii_module_base.h" />
-    <ClInclude Include="ui\ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
