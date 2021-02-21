@@ -234,8 +234,7 @@ bool patchii_run()
 	}
 	stat_dx9imp.ok();
 
-	std::cout << "\nInitializing patchii..."
-				 "\nHandle: 0x" << globals::dll_handle;
+	std::cout << "\nInitializing patchii...";
 	
 	console::status_print stat_wincreate("Creating window...");
 

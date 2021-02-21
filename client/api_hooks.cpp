@@ -1,15 +1,26 @@
 #include "api_hooks.h"
 #include <Windows.h>
+#include <intrin.h>
 #include <unordered_map>
 #include <vector>
 #include <console.h>
 #include <MinHook.h>
+#include <winternal.h>
+#include <client/globals.h>
 
 static std::unordered_map<const char *, std::pair<void*, std::vector<void*>>> api_hooks; // api_hooks[function name] | first = original | second = callbacks
+static void *end_of_dll   = nullptr;
+static void *start_of_dll = nullptr;
+
+// Checks if the call is from our client
+#define filter_api_calls() (_ReturnAddress() >= start_of_dll && _ReturnAddress() <= end_of_dll)
 
 static decltype(MessageBoxA) *o_MessageBoxA = nullptr;
 int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT utype)
 {
+	if (filter_api_calls())
+		return o_MessageBoxA(hwnd, lptext, lpcaption, utype);
+
 	using callback_t = void(*)(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, LPCSTR &lpcaption, UINT &utype);
 	static std::vector<void*> &callbacks = api_hooks["MessageBoxA"].second;
 
@@ -52,6 +63,9 @@ bool patchii_apihooks_enable()
 	
 	console::status_print stat_commitapi("Committing all API hooks");
 	stat_commitapi.autoset(MH_EnableHook(MH_ALL_HOOKS) == MH_OK);
+
+	start_of_dll = globals::dll_base;
+	end_of_dll   = globals::dll_base + pe_get_ntheaderptr(globals::dll_handle)->OptionalHeader.SizeOfImage;
 
 	return true;
 }

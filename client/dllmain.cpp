@@ -1,18 +1,28 @@
 #include <Windows.h>
 #include <console.h>
 
+#include <memory>
+
 #include "globals.h"
 #include "patchii.h"
 
-// TODO: bound to a single flashdrive hwid to prevent from getting leaked
+struct entry_info_t
+{
+    HMODULE hModule;
+    DWORD   ul_reason_for_call;
+    LPVOID  lpReserved;
+} entry_info { 0 };
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
     if (ul_reason_for_call != DLL_PROCESS_ATTACH)
         return TRUE;
 
-    HANDLE entry_thread = CreateThread(nullptr, NULL, [](LPVOID hmod) -> DWORD
+    entry_info = { hModule, ul_reason_for_call, lpReserved };
+    HANDLE entry_thread = CreateThread(nullptr, NULL, [](LPVOID params) -> DWORD
     {
-        globals::dll_handle = reinterpret_cast<HMODULE>(hmod);
+        globals::dll_handle = entry_info.hModule;
+        globals::dll_base   = entry_info.hModule ? reinterpret_cast<std::uint8_t *>(entry_info.hModule) : nullptr /* used later when manually mapped and lpReserved is used for passing info */ ;
         bool console_init_result = console::initialize();
         
         if (!console_init_result)
@@ -23,18 +33,23 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         
         console::print_warning("Do not close this window until patchii is completely unloaded.");
 
+        std::cout << "\nEntry point:"
+                  << "\n\t" << entry_info.hModule
+                  << "\n\t" << entry_info.ul_reason_for_call
+                  << "\n\t" << entry_info.lpReserved;
+
         patchii_run();
 
         LBL_IN_INIT_UNLOAD:
         if (console_init_result)
             FreeConsole();
 
-        if (hmod)
-            FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(hmod), 1);
+        if (entry_info.hModule)
+            FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(entry_info.hModule), 1);
 
         return NULL;
     },
-    hModule, NULL, nullptr);
+    nullptr, NULL, nullptr);
 
     if (entry_thread)
         CloseHandle(entry_thread);
