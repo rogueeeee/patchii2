@@ -86,16 +86,10 @@ int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT ut
 #define m_create_apihook_helper(mod, function) create_apihook_helper(mod, #function, &hk_##function, reinterpret_cast<void **>(&o_##function))
 void create_apihook_helper(const wchar_t *mod, const char *proc, void *hk, void **original)
 {
-	console::status_print stat_hooking(std::string("Hooking: ") + proc);
-	if (void *target_api; MH_CreateHookApiEx(mod, proc, hk, original, &target_api) == MH_OK)
+	if (void *target_api; console::status_print(std::string("Hooking: ") + proc).autoset(MH_CreateHookApiEx(mod, proc, hk, original, &target_api) == MH_OK))
 	{
 		api_hooks[proc].handle    = target_api;
 		api_hooks[proc].callbacks = {};
-		stat_hooking.ok();
-	}
-	else
-	{
-		stat_hooking.fail();
 	}
 }
 
@@ -115,10 +109,7 @@ bool patchii_apihooks_enable()
 bool patchii_apihooks_disable()
 {
 	for (auto hooked_api : api_hooks)
-	{
-		console::status_print stat_hkdisable(std::string("Disabling API Hook: ") + hooked_api.first);
-		stat_hkdisable.autoset(MH_DisableHook(hooked_api.second.handle) == MH_OK);
-	}
+		console::status_print(std::string("Disabling API Hook: ") + hooked_api.first).autoset(MH_DisableHook(hooked_api.second.handle) == MH_OK);
 
 	return true;
 }
