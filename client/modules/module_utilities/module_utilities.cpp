@@ -34,7 +34,7 @@ bool module_utilities::unload()
 	
 	std::cout << "\nutils module has been unloaded!";
 	loaded = false;
-	return false;
+	return true;
 }
 
 bool module_utilities::is_loaded()
@@ -44,16 +44,6 @@ bool module_utilities::is_loaded()
 
 void module_utilities::draw_imgui_tools()
 {
-	if (ImGui::BeginMenu("API Intercept (utils)"))
-	{
-		if (ImGui::MenuItem("TerminateProcess")) {}
-
-		if (intercept_msgboxa_available && ImGui::MenuItem("MessageBoxA"))
-			api_int_messageboxa_togglewindow();
-
-		ImGui::EndMenu();
-	}
-
 	if (ImGui::MenuItem("Thread Manager"))
 	{
 	}
@@ -69,4 +59,17 @@ void module_utilities::draw_imgui_module_options()
 void module_utilities::draw_imgui()
 {
 	api_int_messageboxa_drawwindow();
+}
+
+void module_utilities::draw_imgui_mainmenubar()
+{
+	if (ImGui::BeginMenu("API Intercept"))
+	{
+		if (ImGui::MenuItem("TerminateProcess")) {}
+
+		if (intercept_msgboxa_available && ImGui::MenuItem("MessageBoxA"))
+			api_int_messageboxa_togglewindow();
+
+		ImGui::EndMenu();
+	}
 }

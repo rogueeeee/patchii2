@@ -49,7 +49,7 @@ struct api_hook_container_t
 	}
 };
 
-static std::unordered_map<const char *, api_hook_container_t> api_hooks; // api_hooks[function name] | first = original | second = callbacks
+static std::unordered_map<const char *, api_hook_container_t> api_hooks;
 static void *end_of_dll   = nullptr;
 static void *start_of_dll = nullptr;
 

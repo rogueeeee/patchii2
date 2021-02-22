@@ -1,6 +1,6 @@
 # patchii2
 
-![](ss.png)
+![](client.png)
 
 <table>
     <tr>
@@ -17,6 +17,8 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 
 ## Usage
 * Requires [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) to be installed.
+
+![](loader.png)
 1. Run the patchii loader
 2. Select the target process
     * An "*auto*" button is available to automatically detect the process name based off a predefined list

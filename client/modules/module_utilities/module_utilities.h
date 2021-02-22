@@ -13,4 +13,5 @@ public:
 	virtual void draw_imgui_tools() override;
 	virtual void draw_imgui_module_options() override;
 	virtual void draw_imgui() override;
+	virtual void draw_imgui_mainmenubar() override;
 };

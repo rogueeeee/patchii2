@@ -33,6 +33,9 @@
     <ClCompile Include="modules\module_utilities\module_utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="modules\module_utilities\api_intercept\api_int_messageboxa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patchii.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="modules\module_utilities\module_utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\module_utilities\api_intercept\api_int_messageboxa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
