@@ -182,13 +182,17 @@ void threadmanager_draw_window()
 				text_color  = cached_thread.suspended ? ImVec4{ 1.f, 0.f, 0.f, 1.f } : ImVec4{ 0.f, 1.f, 0.f, 1.f };
 			}
 		
+			ImGui::PushID(idx);
 			if (ImGui::Button(button_text) && cached_thread.id != client_thread_id)
 			{
+				std::cout << "\n2";
+
 				if (cached_thread.suspended)
 					resume_thread(cached_thread);
 				else
 					suspend_thread(cached_thread);
 			}
+			ImGui::PopID();
 
 			ImGui::SameLine();
 			ImGui::Text("ID:");
