@@ -40,10 +40,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
         patchii_run();
 
-        LBL_IN_INIT_UNLOAD:
-        if (console_init_result)
-            FreeConsole();
+        FreeConsole();
 
+        LBL_IN_INIT_UNLOAD:
         if (entry_info.hModule)
             FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(entry_info.hModule), 1);
 

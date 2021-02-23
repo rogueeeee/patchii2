@@ -75,7 +75,7 @@ bool api_int_messageboxa_unload()
 
 void api_int_messageboxa_togglewindow()
 {
-	window_visible ^= true;
+	window_visible = !window_visible;
 }
 
 void api_int_messageboxa_drawwindow()

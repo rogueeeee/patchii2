@@ -8,9 +8,17 @@ from distutils.spawn import find_executable
 x86 = 0
 x64 = 1
 
+upx_enabled = True
+
 def run_msbuild(project_name, platform):
     if int(os.system("msbuild patchii2.sln /t:" + project_name + " /p:Configuration=Release /p:Platform=x" + ("86" if platform == x86 else "64"))) is not 0:
         print("\nBUILD FAILED\n")
+        exit(1)
+    return
+
+def run_upx(path):
+    if int(os.system("upx " + os.path.realpath(path) + " -9 -v -f")) is not 0:
+        print("\nCOMPRESSING FAILED\n")
         exit(1)
     return
 
@@ -38,6 +46,16 @@ if find_executable("msbuild") is None:
     print("ERROR: msbuild not found! Add the msbuild directory to your environment path variable")
     exit(1)
 
+if find_executable("msbuild") is None:
+    print("ERROR: upx was not found! Add the upx directory to your environment path variable")
+    while True:
+        usr_inp = str(input("Continue without compressing? (Yy/Nn): "))
+        if usr_inp == "Y" or usr_inp == "y":
+            upx_enabled = False
+            break
+        elif usr_inp == "N" or usr_inp == "n":
+            exit(1)
+
 print("Running cleanup...")
 if os.system("msbuild patchii2.sln /t:Clean") is not 0:
     print("Cleanup failed")
@@ -45,9 +63,13 @@ if os.system("msbuild patchii2.sln /t:Clean") is not 0:
 
 print("Starting build of client/ x86")
 run_msbuild("client", x86)
+#if upx_enabled:
+#    run_upx("build/Release_Win32/patchii_client.dll")
 
 print("Starting build of client/ x64")
 run_msbuild("client", x64)
+#if upx_enabled:
+#    run_upx("build/Release_x64/patchii_client.dll")
 
 print("Generating binary headers for injector/")
 print("\tGenerating for x86...")
@@ -57,9 +79,13 @@ generate_binary_header("build/Release_x64/patchii_client.dll", "client_bin", "in
 
 print("Starting build of injector/ x86")
 run_msbuild("injector", x86)
+#if upx_enabled:
+#    run_upx("build/Release_Win32/patchii_injector.exe")
 
 print("Starting build of injector/ x64")
 run_msbuild("injector", x64)
+#if upx_enabled:
+#    run_upx("build/Release_x64/patchii_injector.exe")
 
 print("Generating binary headers for loader/")
 print("\tGenerating for x86...")
@@ -72,6 +98,10 @@ run_msbuild("loader", x86)
 
 print("Starting build of injector/ x64")
 run_msbuild("loader", x64)
+
+if upx_enabled:
+    run_upx("build/Release_Win32/patchii_loader.exe")
+    run_upx("build/Release_x64/patchii_loader.exe")
 
 print("\nBUILD FINISHED")
 os.makedirs("build/final", 0o777, True)

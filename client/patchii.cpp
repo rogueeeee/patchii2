@@ -147,7 +147,7 @@ void patchii_draw_imgui()
 			}
 
 			if (ImGui::MenuItem("About"))
-				patchii_about_window_visible ^= true;
+				patchii_about_window_visible = !patchii_about_window_visible;
 
 			if (ImGui::MenuItem("Unload"))
 				dx9imgui_window::get().start_dispose();
