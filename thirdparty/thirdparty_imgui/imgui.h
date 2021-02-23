@@ -2279,6 +2279,7 @@ struct ImDrawVert
 IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT;
 #endif
 
+#pragma warning (disable: 26495)
 // [Internal] For use by ImDrawList
 struct ImDrawCmdHeader
 {
@@ -2286,6 +2287,7 @@ struct ImDrawCmdHeader
     ImTextureID     TextureId;
     unsigned int    VtxOffset;
 };
+#pragma warning (default: 26495)
 
 // [Internal] For use by ImDrawListSplitter
 struct ImDrawChannel

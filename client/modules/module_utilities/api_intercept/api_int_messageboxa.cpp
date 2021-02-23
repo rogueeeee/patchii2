@@ -34,13 +34,13 @@ void __stdcall apicb_MessageBoxA(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, 
 	if (immediately_return)
 	{
 		e.ret_val.i32 = default_return_value;
-		e.flags = api_hook_flags::END | api_hook_flags::USE_EVENT_RETURN;
+		e.flags = api_hook_flags::END | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
 		return;
 	}
 
 	if (nullhwnd_enabled)
 		hwnd = nullptr;
-
+	
 	if (change_caption)
 		lpcaption = caption_buffer;
 
@@ -73,36 +73,36 @@ bool api_int_messageboxa_unload()
     return true;
 }
 
-void api_int_messageboxa_togglewindow()
+void api_int_messageboxa_toggle_window()
 {
 	window_visible = !window_visible;
 }
 
-void api_int_messageboxa_drawwindow()
+void api_int_messageboxa_draw_window()
 {
-	if (window_visible)
+	if (!window_visible)
+		return;
+
+	if (ImGui::Begin("Intercept API: MessageBoxA", &window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (ImGui::Begin("Intercept API: MessageBoxA", &window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize))
-		{
-			ImGui::Checkbox("Active", &is_active);
-			ImGui::Checkbox("Log Intercept", &log_to_con);
-			ImGui::NewLine();
+		ImGui::Checkbox("Active", &is_active);
+		ImGui::Checkbox("Log Intercept", &log_to_con);
+		ImGui::NewLine();
 
-			static const char *returnopt[] = { "NULL", "IDOK", "IDCANCEL", "IDABORT", "IDRETRY", "IDIGNORE", "IDYES", "IDNO", "???", "???", "IDTRYAGAIN", "IDCONTINUE" };
-			ImGui::Checkbox("Immediately return", &immediately_return);
-			ImGui::SameLine();
-			ImGui::Combo("##default_return_value", &default_return_value, returnopt, IM_ARRAYSIZE(returnopt));
+		static const char *returnopt[] = { "NULL", "IDOK", "IDCANCEL", "IDABORT", "IDRETRY", "IDIGNORE", "IDYES", "IDNO", "???", "???", "IDTRYAGAIN", "IDCONTINUE" };
+		ImGui::Checkbox("Immediately return", &immediately_return);
+		ImGui::SameLine();
+		ImGui::Combo("##default_return_value", &default_return_value, returnopt, IM_ARRAYSIZE(returnopt));
 
-			ImGui::Checkbox("Force no parent handle", &nullhwnd_enabled);
+		ImGui::Checkbox("Force no parent handle", &nullhwnd_enabled);
 
-			ImGui::InputText("##text_buffer", text_buffer, MAX_PATH);
-			ImGui::SameLine();
-			ImGui::Checkbox("Change Text", &change_text);
+		ImGui::InputText("##text_buffer", text_buffer, MAX_PATH);
+		ImGui::SameLine();
+		ImGui::Checkbox("Change Text", &change_text);
 
-			ImGui::InputText("##caption_buffer", caption_buffer, MAX_PATH);
-			ImGui::SameLine();
-			ImGui::Checkbox("Change Caption", &change_caption);
-		}
-		ImGui::End();
+		ImGui::InputText("##caption_buffer", caption_buffer, MAX_PATH);
+		ImGui::SameLine();
+		ImGui::Checkbox("Change Caption", &change_caption);
 	}
+	ImGui::End();
 }

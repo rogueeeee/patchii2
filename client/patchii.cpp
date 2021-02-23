@@ -160,9 +160,9 @@ void patchii_draw_imgui()
 
 		ImGui::Separator();
 
-		static int last_active_count = 0;
+		static int last_active_count = -1;
 		static int active_modules_count = 0;
-		static std::string mod_txt_str = "Modules (0/" + std::to_string(patchii_modules.size()) + ")";
+		static std::string mod_txt_str;
 
 		if (active_modules_count != last_active_count)
 		{
@@ -176,7 +176,7 @@ void patchii_draw_imgui()
 			{
 				bool is_loaded = mod->is_loaded();
 				bool is_open   = false;
-				ImGui::PushStyleColor(ImGuiCol_Text, is_loaded ? ImVec4 { 0.f, 1.f, 0.f, 1.f } : ImVec4{ 1.f, 0.f, 0.f, 1.f });
+				ImGui::PushStyleColor(ImGuiCol_Text, is_loaded ? ImVec4 { 0.f, 1.f, 0.f, 1.f } : ImVec4 { 1.f, 0.f, 0.f, 1.f });
 				if (ImGui::BeginMenu(mod->name.c_str()))
 				{
 					is_open = true;

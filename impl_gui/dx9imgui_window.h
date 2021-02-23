@@ -1,10 +1,13 @@
 #pragma once
 
+#pragma warning (disable: 26495)
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx9.h>
+#pragma warning (default: 26495)
+
 #include <string>
 #include <vector>
 
