@@ -13,6 +13,35 @@ struct thread_cache_t
 	bool suspended;
 };
 
+// RAII implementation
+class thread_open_handle_helper
+{
+public:
+	thread_open_handle_helper(DWORD id)
+	{
+		this->hnd = OpenThread(THREAD_ALL_ACCESS, false, id);
+	}
+
+	~thread_open_handle_helper()
+	{
+		if (this->hnd)
+			CloseHandle(this->hnd);
+	}
+
+	explicit operator bool() const
+	{
+		return hnd;
+	}
+
+	const HANDLE &get()
+	{
+		return hnd;
+	}
+
+private:
+	HANDLE hnd;
+};
+
 static std::vector<thread_cache_t> cached_threads;
 static DWORD client_thread_id = 0;
 static bool window_visible = false;
@@ -59,49 +88,21 @@ void cache_threads()
 
 void suspend_thread(thread_cache_t &thread)
 {
-	console::status_print stat_susp("Suspending thread ID: " + thread.id_str);
+	thread_open_handle_helper handle(thread.id);
 
-	HANDLE open_thread = OpenThread(THREAD_ALL_ACCESS, false, thread.id);
-	if (!open_thread)
-	{
-		stat_susp.fail();
-		return;
-	}
-	
-	if (SuspendThread(open_thread) == static_cast<DWORD>(-1))
-	{
-		stat_susp.fail();
-		CloseHandle(open_thread);
-		return;
-	}
+	if (console::status_print("Suspending thread ID: " + thread.id_str).autoset(handle && SuspendThread(handle.get()) != static_cast<DWORD>(-1)))
+		thread.suspended = true;
 
-	thread.suspended = true;
-	stat_susp.ok();
-	CloseHandle(open_thread);
 	return;
 }
 
 void resume_thread(thread_cache_t &thread)
 {
-	console::status_print stat_res("Resuming thread ID: " + thread.id_str);
+	thread_open_handle_helper handle(thread.id);
 
-	HANDLE open_thread = OpenThread(THREAD_ALL_ACCESS, false, thread.id);
-	if (!open_thread)
-	{
-		stat_res.fail();
-		return;
-	}
+	if (console::status_print("Resuming thread ID: " + thread.id_str).autoset(handle && ResumeThread(handle.get()) != static_cast<DWORD>(-1)))
+		thread.suspended = false;
 
-	if (ResumeThread(open_thread) == static_cast<DWORD>(-1))
-	{
-		stat_res.fail();
-		CloseHandle(open_thread);
-		return;
-	}
-
-	thread.suspended = false;
-	stat_res.ok();
-	CloseHandle(open_thread);
 	return;
 }
 
@@ -161,7 +162,7 @@ void threadmanager_draw_window()
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button("Unsuspend All"))
+		if (ImGui::Button("Resume All"))
 		{
 			for (auto &thread : cached_threads)
 				if (thread.suspended && thread.id != client_thread_id)
@@ -171,33 +172,38 @@ void threadmanager_draw_window()
 		ImGui::BeginChild("threadidlist", ImVec2 { 316.f, 350.f }, true);
 		for (std::size_t idx = 0; idx < cached_threads.size(); idx++)
 		{
-			thread_cache_t &cached_thread = cached_threads[idx];
+			thread_cache_t &thread = cached_threads[idx];
 		
-			const char *button_text = "No Action";
+			const char *button_text = "Disabled";
 			ImVec4 text_color = ImVec4 { 1.f, 1.f, 0.f, 1.f };
+			bool is_not_client_thread = thread.id != client_thread_id;
 
-			if (cached_thread.id != client_thread_id)
+			if (is_not_client_thread)
 			{
-				button_text = cached_thread.suspended ? "Unsuspend" : " Suspend ";
-				text_color  = cached_thread.suspended ? ImVec4{ 1.f, 0.f, 0.f, 1.f } : ImVec4{ 0.f, 1.f, 0.f, 1.f };
+				button_text = thread.suspended ? "Resume" : "Suspend";
+				text_color  = thread.suspended ? ImVec4{ 1.f, 0.f, 0.f, 1.f } : ImVec4{ 0.f, 1.f, 0.f, 1.f };
 			}
-		
-			ImGui::PushID(idx);
-			if (ImGui::Button(button_text) && cached_thread.id != client_thread_id)
-			{
-				std::cout << "\n2";
 
-				if (cached_thread.suspended)
-					resume_thread(cached_thread);
-				else
-					suspend_thread(cached_thread);
+			ImGui::PushID(idx);
+			if (ImGui::Button(is_not_client_thread ? "Terminate" : "Disabled", ImVec2 { 71.f, 20.f }) && is_not_client_thread)
+			{
+				thread_open_handle_helper handle(thread.id);
+				#pragma warning (disable: 6258)
+				console::status_print("Terminating thread ID: " + thread.id_str).autoset(handle && TerminateThread(handle.get(), 0));
+				#pragma warning (default: 6258)
+			}
+			ImGui::SameLine();
+			
+			if (ImGui::Button(button_text, ImVec2 { 71.f, 20.f }) && is_not_client_thread)
+			{
+				thread.suspended ? resume_thread(thread) : suspend_thread(thread);
 			}
 			ImGui::PopID();
 
 			ImGui::SameLine();
 			ImGui::Text("ID:");
 			ImGui::SameLine();
-			ImGui::TextColored(text_color, cached_thread.id_str.c_str());
+			ImGui::TextColored(text_color, thread.id_str.c_str());
 		}
 		ImGui::EndChild();
 	}
