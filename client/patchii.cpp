@@ -79,7 +79,7 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void patchii_draw_window_about()
 {
-	if (ImGui::Begin("About", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize))
+	if (ImGui::Begin("About", &patchii_about_window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize))
 	{
 		if (static LPDIRECT3DTEXTURE9 patchii_image = nullptr; patchii_image || (patchii_image = dx9imgui_window::get().make_texture_from_memory(patchii_img_bin, sizeof(patchii_img_bin), 128, 201)) )
 			ImGui::Image(patchii_image, ImVec2{ 128.f, 201.f });
@@ -108,43 +108,34 @@ void patchii_draw_imgui()
 	{
 
 		bool title_open = false;
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{ .69f, .61f, .85f, 1.f });
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ .69f, .61f, .85f, 1.f });
 		if (ImGui::BeginMenu("patchii"))
 		{
 			title_open = true;
 			ImGui::PopStyleColor();
 
-			ImGui::Text("Description");
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(PATCHII_DESCRIPTION);
-
-			if (ImGui::BeginMenu("Settings"))
+			// Close Mode
+			if (ImGui::BeginMenu("On Close"))
 			{
-				// Close Mode
-				if (ImGui::BeginMenu("On Close"))
-				{
-					ImGui::RadioButton("Unload", &patchii_close_mode, static_cast<int>(e_close_mode::UNLOAD));
-					ImGui::RadioButton("Hide (F5 to return)", &patchii_close_mode, static_cast<int>(e_close_mode::HIDE));
-					ImGui::EndMenu();
-				}
-
-				// Console toggle
-				static bool toggle_console = IsWindowVisible(reinterpret_cast<HWND>(console::get_hwnd()));
-				if (ImGui::Checkbox("Show console", &toggle_console))
-					ShowWindow((HWND)console::get_hwnd(), toggle_console ? SW_SHOW : SW_HIDE);
-
-				// CPU Limiter
-				ImGui::Checkbox("Unfocused CPU Limiter", &patchii_ufocus_cpu_limiter);
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("Limits CPU usage when the window is not focused");
-
-				// No Render
-				ImGui::Checkbox("Unfocused No Render", &patchii_ufocus_no_render);
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("Disables rendering when the window is not focused");
-
+				ImGui::RadioButton("Unload", &patchii_close_mode, static_cast<int>(e_close_mode::UNLOAD));
+				ImGui::RadioButton("Hide (F5 to return)", &patchii_close_mode, static_cast<int>(e_close_mode::HIDE));
 				ImGui::EndMenu();
 			}
+
+			// Console toggle
+			static bool toggle_console = IsWindowVisible(reinterpret_cast<HWND>(console::get_hwnd()));
+			if (ImGui::Checkbox("Show console", &toggle_console))
+				ShowWindow((HWND)console::get_hwnd(), toggle_console ? SW_SHOW : SW_HIDE);
+
+			// CPU Limiter
+			ImGui::Checkbox("Unfocused CPU Limiter", &patchii_ufocus_cpu_limiter);
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("Limits CPU usage when the window is not focused");
+
+			// No Render
+			ImGui::Checkbox("Unfocused No Render", &patchii_ufocus_no_render);
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("Disables rendering when the window is not focused");
 
 			if (ImGui::MenuItem("About"))
 				patchii_about_window_visible = !patchii_about_window_visible;
@@ -156,7 +147,12 @@ void patchii_draw_imgui()
 		}
 
 		if (!title_open)
+		{
 			ImGui::PopStyleColor();
+
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip(PATCHII_DESCRIPTION);
+		}
 
 		ImGui::Separator();
 
@@ -176,7 +172,7 @@ void patchii_draw_imgui()
 			{
 				bool is_loaded = mod->is_loaded();
 				bool is_open   = false;
-				ImGui::PushStyleColor(ImGuiCol_Text, is_loaded ? ImVec4 { 0.f, 1.f, 0.f, 1.f } : ImVec4 { 1.f, 0.f, 0.f, 1.f });
+				ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, is_loaded ? ImVec4 { 0.f, 1.f, 0.f, 1.f } : ImVec4 { 1.f, 0.f, 0.f, 1.f });
 				if (ImGui::BeginMenu(mod->name.c_str()))
 				{
 					is_open = true;
