@@ -46,7 +46,7 @@ if find_executable("msbuild") is None:
     print("ERROR: msbuild not found! Add the msbuild directory to your environment path variable")
     exit(1)
 
-if find_executable("msbuild") is None:
+if find_executable("upx") is None:
     print("ERROR: upx was not found! Add the upx directory to your environment path variable")
     while True:
         usr_inp = str(input("Continue without compressing? (Yy/Nn): "))
@@ -99,14 +99,16 @@ run_msbuild("loader", x86)
 print("Starting build of injector/ x64")
 run_msbuild("loader", x64)
 
-if upx_enabled:
-    run_upx("build/Release_Win32/patchii_loader.exe")
-    run_upx("build/Release_x64/patchii_loader.exe")
-
 print("\nBUILD FINISHED")
 os.makedirs("build/final", 0o777, True)
 shutil.copyfile("build/Release_Win32/patchii_loader.exe", "build/final/patchii_x86.exe")
 shutil.copyfile("build/Release_x64/patchii_loader.exe", "build/final/patchii_x64.exe")
+
+if upx_enabled:
+    print("\nPACKING\n")
+    run_upx("build/final/patchii_x86.exe")
+    run_upx("build/final/patchii_x64.exe")
+
 os.startfile(os.path.realpath("build/final"))
 
 exit(0)
