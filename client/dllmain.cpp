@@ -29,9 +29,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
             console::print_warning("Do not close this window until patchii is completely unloaded.");
 
             std::cout << "\nEntry point:"
-                << "\n\t" << entry_info.hModule
+                << "\n\t0x" << entry_info.hModule
                 << "\n\t" << entry_info.ul_reason_for_call
-                << "\n\t" << entry_info.lpReserved;
+                << "\n\t0x" << entry_info.lpReserved;
 
             patchii_run();
 

@@ -59,7 +59,7 @@ static void *start_of_dll = nullptr;
 static decltype(MessageBoxA) *o_MessageBoxA = nullptr;
 int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT utype)
 {
-	api_hook_container_t &container = api_hooks["MessageBoxA"];
+	static api_hook_container_t &container = api_hooks["MessageBoxA"];
 
 	if (filter_api_calls())
 		return o_MessageBoxA(hwnd, lptext, lpcaption, utype);
@@ -83,9 +83,9 @@ int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT ut
 }
 
 static decltype(TerminateProcess) *o_TerminateProcess = nullptr;
-bool __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
+BOOL __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
 {
-	api_hook_container_t &container = api_hooks["TerminateProcess"];
+	static api_hook_container_t &container = api_hooks["TerminateProcess"];
 
 	if (filter_api_calls())
 		o_TerminateProcess(hproc, exitcode);
@@ -105,7 +105,7 @@ bool __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
 	if (~e.flags & api_hook_flags::DONT_CALL_ORIGINAL)
 		result = o_TerminateProcess(hproc, exitcode);
 
-	return (e.flags & api_hook_flags::USE_EVENT_RETURN) ? e.ret_val.i8 : result;
+	return (e.flags & api_hook_flags::USE_EVENT_RETURN) ? e.ret_val.i32 : result;
 }
 
 #define m_create_apihook_helper(mod, function) create_apihook_helper(mod, #function, &hk_##function, reinterpret_cast<void **>(&o_##function))
@@ -146,6 +146,7 @@ bool patchii_apihooks_register(const char *api_name, void *callback)
 		return false;
 
 	api_hooks[api_name].callback_add_queue.push_back(callback);
+	std::cout << "\nAPI callback registered for " << api_name << " with callback address 0x" << callback;
 
 	return true;
 }
@@ -156,6 +157,7 @@ bool patchii_apihooks_unregister(const char *api_name, void *callback)
 		return false;
 
 	api_hooks[api_name].callback_remove_queue.push_back(callback);
+	std::cout << "\nAPI callback unregistered for " << api_name << " with callback address 0x" << callback;
 
 	return true;
 }

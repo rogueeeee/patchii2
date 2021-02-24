@@ -23,18 +23,18 @@ void __stdcall apicb_MessageBoxA(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, 
 
 	if (log_to_con)
 	{
-		std::cout << "\nAPI Intercept MessageBoxA:"
-			"\n\tReturn address: " << e.return_address <<
-			"\n\t Window handle: " << hwnd <<
-			"\n\t          Type: " << utype <<
-			"\n\t       Caption: " << lpcaption <<
-			"\n\t          Text: " << lptext;
+		std::cout << "\nAPI Intercept: MessageBoxA"
+			"\n\tReturn address: 0x" << e.return_address <<
+			"\n\t Window handle: 0x" << hwnd             <<
+			"\n\t          Type: "   << utype            <<
+			"\n\t       Caption: "   << lpcaption        <<
+			"\n[Text]\n"             << lptext           << "\n[/text]";
 	}
 
 	if (immediately_return)
 	{
 		e.ret_val.i32 = default_return_value;
-		e.flags = api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
+		e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
 		return;
 	}
 
@@ -47,18 +47,18 @@ void __stdcall apicb_MessageBoxA(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, 
 	if (change_text)
 		lptext = text_buffer;
 
-	e.flags = api_hook_flags::END_CALLBACK;
+	e.flags |= api_hook_flags::END_CALLBACK;
 	return;
 }
 
 bool api_int_messageboxa_load()
 {
-    return console::status_print("Adding API callback for MessageBoxA").autoset(patchii_apihooks_register("MessageBoxA", &apicb_MessageBoxA));
+    return console::status_print("[API Intercept] Adding API callback for MessageBoxA").autoset(patchii_apihooks_register("MessageBoxA", &apicb_MessageBoxA));
 }
 
 bool api_int_messageboxa_unload()
 {
-	if (!console::status_print("Removing API callback: MessageBoxA").autoset(patchii_apihooks_unregister("MessageBoxA", &apicb_MessageBoxA)))
+	if (!console::status_print("[API Intercept] Removing API callback: MessageBoxA").autoset(patchii_apihooks_unregister("MessageBoxA", &apicb_MessageBoxA)))
 		return false;
 
 	window_visible       = false;

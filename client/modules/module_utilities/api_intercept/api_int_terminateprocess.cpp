@@ -1,6 +1,7 @@
 #include "api_int_terminateprocess.h"
 #include <Windows.h>
 #include <TlHelp32.h>
+#include <psapi.h>
 #include <client/api_hooks.h>
 #include <console.h>
 #include <imgui.h>
@@ -12,6 +13,7 @@ struct mode_
 {
     enum
     {
+        DO_NOTHING,
         IMMEDIATELY_RETURN,
         FILTER_BY_NAME,
     };
@@ -19,7 +21,8 @@ struct mode_
 
 static bool is_active      = false;
 static bool window_visible = false;
-static int  mode           = mode_::IMMEDIATELY_RETURN;
+static bool log_intercept   = false;
+static int  mode           = mode_::DO_NOTHING;
 static int  default_return = 1;
 static std::vector<std::pair<std::string, bool>> proc_name_filter;
 
@@ -71,19 +74,54 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE proc, UINT exitc
 {
     if (!is_active)
         return;
-
-    if (mode == mode_::IMMEDIATELY_RETURN)
+    
+    char mod_name_buff[MAX_PATH] = { '\0' };
+    if (log_intercept || mode == mode_::FILTER_BY_NAME)
     {
-        e.ret_val.i8 = default_return;
-        e.flags = api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
-        return;
+        if (!GetProcessImageFileNameA(proc, mod_name_buff, MAX_PATH))
+            console::print_warning("Failed to obtain module file name. Error code: " + std::to_string(GetLastError()));
     }
 
+    if (log_intercept)
+    {
+        std::cout << "\nAPI Intercept: TerminateProcess"
+                  << "\n\tReturn Address: 0x"   << e.return_address
+                  << "\n\t        Handle: 0x" << proc
+                  << "\n\t     Exit code: "   << exitcode << " (Unsigned) / " << static_cast<int>(exitcode) << " (Signed)"
+                  << "\n\t        Module: "   << mod_name_buff;
+    }
+
+    switch (mode)
+    {
+        case mode_::IMMEDIATELY_RETURN:
+        {
+            e.ret_val.i32 = default_return;
+            e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
+            return;
+        }
+
+        case mode_::FILTER_BY_NAME:
+        {
+            if (mod_name_buff[0] == '\0')
+                break;
+
+            for (const auto &proc : proc_name_filter)
+            {
+                // TODO: optimize?
+                if (proc.first.find(mod_name_buff) != std::string::npos)
+                {
+                    e.ret_val.i32 = true;
+                    e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
+                    return;
+                }
+            }
+        }
+    }
 }
 
 bool api_int_terminateprocess_load()
 {
-    if (!console::status_print("Adding API callback for TerminateProcess").autoset(patchii_apihooks_register("TerminateProcess", apicb_TerminateProcess)))
+    if (!console::status_print("[API Intercept] Adding API callback for TerminateProcess").autoset(patchii_apihooks_register("TerminateProcess", apicb_TerminateProcess)))
         return false;
 
     cache_process();
@@ -92,12 +130,13 @@ bool api_int_terminateprocess_load()
 
 bool api_int_terminateprocess_unload()
 {
-    if (console::status_print("Removing API callback for TerminateProcess").autoset(patchii_apihooks_unregister("TerminateProcess", apicb_TerminateProcess)))
+    if (console::status_print("[API Intercept] Removing API callback for TerminateProcess").autoset(patchii_apihooks_unregister("TerminateProcess", apicb_TerminateProcess)))
         return false;
     
     window_visible     = false;
     is_active          = false;
-    mode               = mode_::IMMEDIATELY_RETURN;
+    log_intercept      = false;
+    mode               = mode_::DO_NOTHING;
     
     proc_name_filter.clear();
     return true;
@@ -116,7 +155,10 @@ void api_int_terminateprocess_draw_window()
     if (ImGui::Begin("API Intercept: TerminateProcess", &window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse))
     {
         ImGui::Checkbox("Active", &is_active);
+        ImGui::Checkbox("Log intercept", &log_intercept);
         ImGui::NewLine();
+
+        ImGui::RadioButton("Do nothing", &mode, mode_::DO_NOTHING);
 
         static const char *opt[] = { "Failed", "Success" };
         ImGui::RadioButton("Immediately Return", &mode, mode_::IMMEDIATELY_RETURN);
@@ -124,11 +166,13 @@ void api_int_terminateprocess_draw_window()
         ImGui::Combo("##default_return", &default_return, opt, IM_ARRAYSIZE(opt));
 
         ImGui::RadioButton("Filter by Processs name", &mode, mode_::FILTER_BY_NAME);
-        
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Immediately returns successful only for the\nselected process without calling the original API");
+
         static char name_search_buff[MAX_PATH] = { '\0' };
         ImGui::InputText("##name_search_buff", name_search_buff, MAX_PATH);
         ImGui::SameLine();
-        ImGui::Text("(Case)");
+        ImGui::Text("(CaseSens)");
         ImGui::SameLine();
         if (ImGui::Button("Refresh"))
             cache_process();

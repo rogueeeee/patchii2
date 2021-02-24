@@ -11,7 +11,7 @@ x64 = 1
 upx_enabled = True
 
 def run_msbuild(project_name, platform):
-    if int(os.system("msbuild patchii2.sln /t:" + project_name + " /p:Configuration=Release /p:Platform=x" + ("86" if platform == x86 else "64"))) is not 0:
+    if int(os.system("msbuild patchii2.sln /t:" + project_name + " /p:TreatWarningsAsErrors=true /p:Configuration=Release /p:Platform=x" + ("86" if platform == x86 else "64"))) is not 0:
         print("\nBUILD FAILED\n")
         exit(1)
     return
