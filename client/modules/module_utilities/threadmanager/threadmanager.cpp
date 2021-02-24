@@ -44,11 +44,11 @@ private:
 
 static std::vector<thread_cache_t> cached_threads;
 static DWORD client_thread_id = 0;
-static bool window_visible = false;
-static bool auto_refresh = false;
+static bool window_visible    = false;
+static bool auto_refresh      = false;
 
-constexpr ULONGLONG tick_delta = 2000;
-static ULONGLONG next_tick_update = 0;
+constexpr ULONGLONG tick_delta       = 800;
+static    ULONGLONG next_tick_update = 0;
 
 void cache_threads()
 {
@@ -88,9 +88,7 @@ void cache_threads()
 
 void suspend_thread(thread_cache_t &thread)
 {
-	thread_open_handle_helper handle(thread.id);
-
-	if (console::status_print("Suspending thread ID: " + thread.id_str).autoset(handle && SuspendThread(handle.get()) != static_cast<DWORD>(-1)))
+	if (thread_open_handle_helper handle(thread.id); console::status_print("Suspending thread ID: " + thread.id_str).autoset(handle && SuspendThread(handle.get()) != static_cast<DWORD>(-1)))
 		thread.suspended = true;
 
 	return;
@@ -98,9 +96,7 @@ void suspend_thread(thread_cache_t &thread)
 
 void resume_thread(thread_cache_t &thread)
 {
-	thread_open_handle_helper handle(thread.id);
-
-	if (console::status_print("Resuming thread ID: " + thread.id_str).autoset(handle && ResumeThread(handle.get()) != static_cast<DWORD>(-1)))
+	if (thread_open_handle_helper handle(thread.id); console::status_print("Resuming thread ID: " + thread.id_str).autoset(handle && ResumeThread(handle.get()) != static_cast<DWORD>(-1)))
 		thread.suspended = false;
 
 	return;

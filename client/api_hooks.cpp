@@ -59,7 +59,6 @@ static void *start_of_dll = nullptr;
 static decltype(MessageBoxA) *o_MessageBoxA = nullptr;
 int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT utype)
 {
-	using callback_t = void(__stdcall*)(api_hook_event &, HWND &, LPCSTR &, LPCSTR &, UINT &);
 	api_hook_container_t &container = api_hooks["MessageBoxA"];
 
 	if (filter_api_calls())
@@ -70,17 +69,43 @@ int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT ut
 	api_hook_event e { _ReturnAddress() };
 	for (auto callback : container.callbacks)
 	{
-		reinterpret_cast<callback_t>(callback)(e, hwnd, lptext, lpcaption, utype);
+		reinterpret_cast<void(__stdcall *)(api_hook_event &, HWND &, LPCSTR &, LPCSTR &, UINT &)>(callback)(e, hwnd, lptext, lpcaption, utype);
 
 		if (e.flags & api_hook_flags::END)
 			break;
 	}
-
+	
 	int result = 0;
 	if (~e.flags & api_hook_flags::DONT_CALL_ORIGINAL)
 		result = o_MessageBoxA(hwnd, lptext, lpcaption, utype);
 
 	return (e.flags & api_hook_flags::USE_EVENT_RETURN) ? e.ret_val.i32 : result;
+}
+
+static decltype(TerminateProcess) *o_TerminateProcess = nullptr;
+bool __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
+{
+	api_hook_container_t &container = api_hooks["TerminateProcess"];
+
+	if (filter_api_calls())
+		o_TerminateProcess(hproc, exitcode);
+
+	container.update_callbacks();
+
+	api_hook_event e{ _ReturnAddress() };
+	for (auto callback : container.callbacks)
+	{
+		reinterpret_cast<void(__stdcall *)(api_hook_event &, HANDLE &, UINT &)>(callback)(e, hproc, exitcode);
+
+		if (e.flags & api_hook_flags::END)
+			break;
+	}
+
+	bool result = false;
+	if (~e.flags & api_hook_flags::DONT_CALL_ORIGINAL)
+		result = o_TerminateProcess(hproc, exitcode);
+
+	return (e.flags & api_hook_flags::USE_EVENT_RETURN) ? e.ret_val.i8 : result;
 }
 
 #define m_create_apihook_helper(mod, function) create_apihook_helper(mod, #function, &hk_##function, reinterpret_cast<void **>(&o_##function))
@@ -96,7 +121,8 @@ void create_apihook_helper(const wchar_t *mod, const char *proc, void *hk, void 
 bool patchii_apihooks_enable()
 {
 	m_create_apihook_helper(L"User32.dll", MessageBoxA);
-	
+	m_create_apihook_helper(L"Kernel32.dll", TerminateProcess);
+
 	console::status_print stat_commitapi("Committing all API hooks");
 	stat_commitapi.autoset(MH_EnableHook(MH_ALL_HOOKS) == MH_OK);
 

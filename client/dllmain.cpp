@@ -23,9 +23,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     {
         globals::dll_handle = entry_info.hModule;
         globals::dll_base   = entry_info.hModule ? reinterpret_cast<std::uint8_t *>(entry_info.hModule) : nullptr /* used later when manually mapped and lpReserved is used for passing info */ ;
-        bool console_init_result = console::initialize();
         
-        if (!console_init_result)
+        if (!console::initialize())
         {
             MessageBoxW(nullptr, L"Failed to initialize console", L"", MB_ICONERROR);
             goto LBL_IN_INIT_UNLOAD;
@@ -41,7 +40,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         patchii_run();
 
         FreeConsole();
-
         LBL_IN_INIT_UNLOAD:
         if (entry_info.hModule)
             FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(entry_info.hModule), 1);

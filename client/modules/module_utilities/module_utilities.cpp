@@ -32,12 +32,18 @@ bool module_utilities::unload()
 {
 	std::cout << "\nUnloading utils module...";
 
-	threadmanager_unload();
-	threadmanager_available = false;
+	if (threadmanager_available)
+	{
+		threadmanager_unload();
+		threadmanager_available = false;
+	}
 
-	api_int_messageboxa_unload();
-	intercept_msgboxa_available = false;
-	
+	if (intercept_msgboxa_available)
+	{
+		api_int_messageboxa_unload();
+		intercept_msgboxa_available = false;
+	}
+
 	std::cout << "\nutils module has been unloaded!";
 	loaded = false;
 	return true;

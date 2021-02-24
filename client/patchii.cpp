@@ -137,6 +137,8 @@ void patchii_draw_imgui()
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("Disables rendering when the window is not focused");
 
+			ImGui::Separator();
+
 			if (ImGui::MenuItem("About"))
 				patchii_about_window_visible = !patchii_about_window_visible;
 
