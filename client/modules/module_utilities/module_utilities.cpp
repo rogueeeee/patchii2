@@ -5,11 +5,13 @@
 #include <imgui.h>
 
 #include "api_intercept/api_int_messageboxa.h"
+#include "api_intercept/api_int_terminateprocess.h"
 #include "threadmanager/threadmanager.h"
 
-static bool loaded                      = false;
-static bool threadmanager_available     = false;
-static bool intercept_msgboxa_available = false;
+static bool loaded                               = false;
+static bool threadmanager_available              = false;
+static bool intercept_msgboxa_available          = false;
+static bool intercept_terminateprocess_available = false;
 
 module_utilities::module_utilities()
 	: patchii_module_base("utils")
@@ -20,8 +22,9 @@ bool module_utilities::load()
 {
 	std::cout << "\nLoading utils module...";
 
-	threadmanager_available     = threadmanager_load();
-	intercept_msgboxa_available = api_int_messageboxa_load();
+	threadmanager_available              = threadmanager_load();
+	intercept_msgboxa_available          = api_int_messageboxa_load();
+	intercept_terminateprocess_available = api_int_terminateprocess_load();
 
 	std::cout << "\nutils module has been loaded!";
 	loaded = true;
@@ -42,6 +45,12 @@ bool module_utilities::unload()
 	{
 		api_int_messageboxa_unload();
 		intercept_msgboxa_available = false;
+	}
+
+	if (intercept_terminateprocess_available)
+	{
+		api_int_terminateprocess_unload();
+		intercept_terminateprocess_available = false;
 	}
 
 	std::cout << "\nutils module has been unloaded!";
@@ -71,13 +80,15 @@ void module_utilities::draw_imgui()
 {
 	threadmanager_draw_window();
 	api_int_messageboxa_draw_window();
+	api_int_terminateprocess_draw_window();
 }
 
 void module_utilities::draw_imgui_mainmenubar()
 {
 	if (ImGui::BeginMenu("API Intercept"))
 	{
-		if (ImGui::MenuItem("TerminateProcess")) {}
+		if (ImGui::MenuItem("TerminateProcess", nullptr, nullptr, intercept_terminateprocess_available))
+			api_int_terminateprocess_toggle_window();
 
 		if (ImGui::MenuItem("MessageBoxA", nullptr, nullptr, intercept_msgboxa_available))
 			api_int_messageboxa_toggle_window();

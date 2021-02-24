@@ -105,6 +105,8 @@ void resume_thread(thread_cache_t &thread)
 bool threadmanager_load()
 {
 	client_thread_id = GetCurrentThreadId();
+	cache_threads();
+
 	return true;
 }
 
@@ -180,7 +182,7 @@ void threadmanager_draw_window()
 				text_color  = thread.suspended ? ImVec4{ 1.f, 0.f, 0.f, 1.f } : ImVec4{ 0.f, 1.f, 0.f, 1.f };
 			}
 
-			ImGui::PushID(idx);
+			ImGui::PushID(static_cast<int>(idx));
 			if (ImGui::Button(is_not_client_thread ? "Terminate" : "Disabled", ImVec2 { 71.f, 20.f }) && is_not_client_thread)
 			{
 				thread_open_handle_helper handle(thread.id);

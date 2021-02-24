@@ -8,7 +8,7 @@ struct api_hook_flags
 	enum
 	{
 		CONTINUE           = 0,
-		END                = (1 << 0),
+		END_CALLBACK       = (1 << 0),
 		DONT_CALL_ORIGINAL = (1 << 1),
 		USE_EVENT_RETURN   = (1 << 2),
 	};

@@ -34,7 +34,7 @@ void __stdcall apicb_MessageBoxA(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, 
 	if (immediately_return)
 	{
 		e.ret_val.i32 = default_return_value;
-		e.flags = api_hook_flags::END | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
+		e.flags = api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
 		return;
 	}
 
@@ -47,7 +47,7 @@ void __stdcall apicb_MessageBoxA(api_hook_event &e, HWND &hwnd, LPCSTR &lptext, 
 	if (change_text)
 		lptext = text_buffer;
 
-	e.flags = api_hook_flags::END;
+	e.flags = api_hook_flags::END_CALLBACK;
 	return;
 }
 
@@ -58,7 +58,9 @@ bool api_int_messageboxa_load()
 
 bool api_int_messageboxa_unload()
 {
-	console::status_print("Removing API callback: MessageBoxA").autoset(patchii_apihooks_unregister("MessageBoxA", &apicb_MessageBoxA));
+	if (!console::status_print("Removing API callback: MessageBoxA").autoset(patchii_apihooks_unregister("MessageBoxA", &apicb_MessageBoxA)))
+		return false;
+
 	window_visible       = false;
 	is_active            = false;
 	log_to_con           = false;
@@ -83,7 +85,7 @@ void api_int_messageboxa_draw_window()
 	if (!window_visible)
 		return;
 
-	if (ImGui::Begin("Intercept API: MessageBoxA", &window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::Begin("API Intercept: MessageBoxA", &window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::Checkbox("Active", &is_active);
 		ImGui::Checkbox("Log Intercept", &log_to_con);

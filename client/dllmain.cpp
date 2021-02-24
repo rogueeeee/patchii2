@@ -24,23 +24,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         globals::dll_handle = entry_info.hModule;
         globals::dll_base   = entry_info.hModule ? reinterpret_cast<std::uint8_t *>(entry_info.hModule) : nullptr /* used later when manually mapped and lpReserved is used for passing info */ ;
         
-        if (!console::initialize())
+        if (console::initialize())
+        {
+            console::print_warning("Do not close this window until patchii is completely unloaded.");
+
+            std::cout << "\nEntry point:"
+                << "\n\t" << entry_info.hModule
+                << "\n\t" << entry_info.ul_reason_for_call
+                << "\n\t" << entry_info.lpReserved;
+
+            patchii_run();
+
+            FreeConsole();
+        }
+        else
         {
             MessageBoxW(nullptr, L"Failed to initialize console", L"", MB_ICONERROR);
-            goto LBL_IN_INIT_UNLOAD;
         }
         
-        console::print_warning("Do not close this window until patchii is completely unloaded.");
-
-        std::cout << "\nEntry point:"
-                  << "\n\t" << entry_info.hModule
-                  << "\n\t" << entry_info.ul_reason_for_call
-                  << "\n\t" << entry_info.lpReserved;
-
-        patchii_run();
-
-        FreeConsole();
-        LBL_IN_INIT_UNLOAD:
         if (entry_info.hModule)
             FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(entry_info.hModule), 1);
 

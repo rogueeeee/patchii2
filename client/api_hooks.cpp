@@ -71,7 +71,7 @@ int __stdcall hk_MessageBoxA(HWND hwnd, LPCSTR lptext, LPCSTR lpcaption, UINT ut
 	{
 		reinterpret_cast<void(__stdcall *)(api_hook_event &, HWND &, LPCSTR &, LPCSTR &, UINT &)>(callback)(e, hwnd, lptext, lpcaption, utype);
 
-		if (e.flags & api_hook_flags::END)
+		if (e.flags & api_hook_flags::END_CALLBACK)
 			break;
 	}
 	
@@ -97,7 +97,7 @@ bool __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
 	{
 		reinterpret_cast<void(__stdcall *)(api_hook_event &, HANDLE &, UINT &)>(callback)(e, hproc, exitcode);
 
-		if (e.flags & api_hook_flags::END)
+		if (e.flags & api_hook_flags::END_CALLBACK)
 			break;
 	}
 
