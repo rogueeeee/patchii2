@@ -9,7 +9,7 @@
 #include <vector>
 #include <unordered_map>
 
-struct mode_
+struct mode_type
 {
     enum
     {
@@ -22,7 +22,7 @@ struct mode_
 static bool is_active      = false;
 static bool window_visible = false;
 static bool log_intercept   = false;
-static int  mode           = mode_::DO_NOTHING;
+static int  mode           = mode_type::DO_NOTHING;
 static int  default_return = 1;
 static std::vector<std::pair<std::string, bool>> proc_name_filter;
 
@@ -45,6 +45,9 @@ void cache_process()
         }
 
         if (mb_proc_name.substr(mb_proc_name.length() - 4) != ".exe")
+            continue;
+
+        if (temp_proc_name_filter.find(mb_proc_name) != temp_proc_name_filter.end())
             continue;
 
         bool already_exists = false;
@@ -76,7 +79,7 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE &proc, UINT &exi
         return;
     
     char mod_name_buff[MAX_PATH] = { '\0' };
-    if (log_intercept || mode == mode_::FILTER_BY_NAME)
+    if (log_intercept || mode == mode_type::FILTER_BY_NAME)
     {
         if (!GetProcessImageFileNameA(proc, mod_name_buff, MAX_PATH))
             console::print_warning("Failed to obtain module file name. Error code: " + std::to_string(GetLastError()));
@@ -94,14 +97,14 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE &proc, UINT &exi
 
     switch (mode)
     {
-        case mode_::IMMEDIATELY_RETURN:
+        case mode_type::IMMEDIATELY_RETURN:
         {
             e.ret_val.i32 = default_return;
             e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
             break;
         }
 
-        case mode_::FILTER_BY_NAME:
+        case mode_type::FILTER_BY_NAME:
         {
             if (mod_name_buff[0] == '\0')
                 break;
@@ -138,7 +141,7 @@ bool api_int_terminateprocess_unload()
     window_visible     = false;
     is_active          = false;
     log_intercept      = false;
-    mode               = mode_::DO_NOTHING;
+    mode               = mode_type::DO_NOTHING;
     
     proc_name_filter.clear();
     return true;
@@ -160,14 +163,14 @@ void api_int_terminateprocess_draw_window()
         ImGui::Checkbox("Log intercept", &log_intercept);
         ImGui::NewLine();
 
-        ImGui::RadioButton("Do nothing", &mode, mode_::DO_NOTHING);
+        ImGui::RadioButton("Do nothing", &mode, mode_type::DO_NOTHING);
 
         static const char *opt[] = { "Failed", "Success" };
-        ImGui::RadioButton("Immediately Return", &mode, mode_::IMMEDIATELY_RETURN);
+        ImGui::RadioButton("Immediately Return", &mode, mode_type::IMMEDIATELY_RETURN);
         ImGui::SameLine();
         ImGui::Combo("##default_return", &default_return, opt, IM_ARRAYSIZE(opt));
 
-        ImGui::RadioButton("Filter by Processs name", &mode, mode_::FILTER_BY_NAME);
+        ImGui::RadioButton("Filter by Processs name", &mode, mode_type::FILTER_BY_NAME);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Immediately returns successful only for the\nselected process without calling the original API");
 
