@@ -97,11 +97,11 @@ void patchii_draw_window_about()
 		ImGui::Text(
 			PATCHII_DESCRIPTION "\n"
 			"\n"
-			"Dear IMGui - ocornut\n"
+			"Dear ImGui " IMGUI_VERSION " - ocornut\n"
 			"MinHook - TsudaKageyu\n"
 			"\n"
 		);
-
+		
 		ImGui::Text("Repository:");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4{ .67f, .84f, .90f, 1.f }, "https://github.com/rogueeeee/patchii2");

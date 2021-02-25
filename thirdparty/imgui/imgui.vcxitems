@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{137f55d6-c477-48c7-b919-b54fe7e2ee53}</ItemsProjectGuid>
+    <ItemsProjectGuid>{9ae9f1a3-ba8c-4c17-af40-65d35c9784b8}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -31,5 +31,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_impl_win32.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_tables.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)LICENSE.txt" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{516fbbf3-3403-4506-bf86-c9b52080c1c6}</ItemsProjectGuid>
+    <ItemsProjectGuid>{e889d1a5-80f5-49f9-a262-49c2a702d762}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -29,5 +29,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hde\table64.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MinHook.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)trampoline.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)LICENSE.txt" />
   </ItemGroup>
 </Project>

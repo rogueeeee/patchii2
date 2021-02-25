@@ -13,24 +13,28 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector", "injector\inject
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loader", "loader\loader.vcxproj", "{E35217B8-E092-468D-AF8A-7681A62227B7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "thirdparty_imgui", "thirdparty\thirdparty_imgui\thirdparty_imgui.vcxitems", "{137F55D6-C477-48C7-B919-B54FE7E2EE53}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "thirdparty", "thirdparty", "{C888C1BC-16DB-4F4C-B429-064C3CF1026E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "thirdparty_minhook", "thirdparty\thirdparty_minhook\thirdparty_minhook.vcxitems", "{516FBBF3-3403-4506-BF86-C9B52080C1C6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "thirdparty\imgui\imgui.vcxitems", "{9AE9F1A3-BA8C-4C17-AF40-65D35C9784B8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minhook", "thirdparty\minhook\minhook.vcxitems", "{E889D1A5-80F5-49F9-A262-49C2A702D762}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "helpers", "helpers", "{109A20C0-474C-434C-805D-5AAD6E0D3497}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		impl_gui\impl_gui.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
-		thirdparty\thirdparty_imgui\thirdparty_imgui.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
-		thirdparty\thirdparty_minhook\thirdparty_minhook.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
+		thirdparty\imgui\imgui.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
+		thirdparty\minhook\minhook.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
 		utils\utils.vcxitems*{05eaed73-78a2-40f8-bc53-7ef8b6005ce8}*SharedItemsImports = 4
-		thirdparty\thirdparty_imgui\thirdparty_imgui.vcxitems*{137f55d6-c477-48c7-b919-b54fe7e2ee53}*SharedItemsImports = 9
-		thirdparty\thirdparty_minhook\thirdparty_minhook.vcxitems*{516fbbf3-3403-4506-bf86-c9b52080c1c6}*SharedItemsImports = 9
 		impl_gui\impl_gui.vcxitems*{6b92865c-df59-40a1-b035-3f881d57dbba}*SharedItemsImports = 9
 		utils\utils.vcxitems*{7bcd9cca-c9ca-4fe5-8bf5-5c19f8aba784}*SharedItemsImports = 4
+		thirdparty\imgui\imgui.vcxitems*{9ae9f1a3-ba8c-4c17-af40-65d35c9784b8}*SharedItemsImports = 9
 		utils\utils.vcxitems*{e17b5009-f901-4bd0-9104-01df24f490b4}*SharedItemsImports = 9
 		impl_gui\impl_gui.vcxitems*{e35217b8-e092-468d-af8a-7681a62227b7}*SharedItemsImports = 4
-		thirdparty\thirdparty_imgui\thirdparty_imgui.vcxitems*{e35217b8-e092-468d-af8a-7681a62227b7}*SharedItemsImports = 4
+		thirdparty\imgui\imgui.vcxitems*{e35217b8-e092-468d-af8a-7681a62227b7}*SharedItemsImports = 4
 		utils\utils.vcxitems*{e35217b8-e092-468d-af8a-7681a62227b7}*SharedItemsImports = 4
+		thirdparty\minhook\minhook.vcxitems*{e889d1a5-80f5-49f9-a262-49c2a702d762}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -66,6 +70,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E17B5009-F901-4BD0-9104-01DF24F490B4} = {109A20C0-474C-434C-805D-5AAD6E0D3497}
+		{6B92865C-DF59-40A1-B035-3F881D57DBBA} = {109A20C0-474C-434C-805D-5AAD6E0D3497}
+		{9AE9F1A3-BA8C-4C17-AF40-65D35C9784B8} = {C888C1BC-16DB-4F4C-B429-064C3CF1026E}
+		{E889D1A5-80F5-49F9-A262-49C2A702D762} = {C888C1BC-16DB-4F4C-B429-064C3CF1026E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D337525-3AD6-4865-BBB8-5F01F5A00EFF}
