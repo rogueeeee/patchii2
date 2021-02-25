@@ -70,7 +70,7 @@ void cache_process()
     CloseHandle(proc_snap);
 }
 
-void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE proc, UINT exitcode)
+void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE &proc, UINT &exitcode)
 {
     if (!is_active)
         return;
@@ -88,6 +88,7 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE proc, UINT exitc
                   << "\n\tReturn Address: 0x"   << e.return_address
                   << "\n\t        Handle: 0x" << proc
                   << "\n\t     Exit code: "   << exitcode << " (Unsigned) / " << static_cast<int>(exitcode) << " (Signed)"
+                  << "\n\t            ID: "   << GetProcessId(proc)
                   << "\n\t        Module: "   << mod_name_buff;
     }
 
@@ -97,26 +98,27 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE proc, UINT exitc
         {
             e.ret_val.i32 = default_return;
             e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
-            return;
+            break;
         }
 
         case mode_::FILTER_BY_NAME:
         {
             if (mod_name_buff[0] == '\0')
                 break;
-
+            
+            const std::string mod_name_str(mod_name_buff);
             for (const auto &proc : proc_name_filter)
             {
-                // TODO: optimize?
-                if (proc.first.find(mod_name_buff) != std::string::npos)
+                if (proc.second && proc.first.length() <= mod_name_str.length() && mod_name_str.find(proc.first) != std::string::npos)
                 {
-                    e.ret_val.i32 = true;
+                    e.ret_val.i32 = 1;
                     e.flags |= api_hook_flags::END_CALLBACK | api_hook_flags::USE_EVENT_RETURN | api_hook_flags::DONT_CALL_ORIGINAL;
-                    return;
+                    break;
                 }
             }
         }
     }
+
 }
 
 bool api_int_terminateprocess_load()

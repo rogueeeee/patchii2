@@ -101,7 +101,7 @@ BOOL __stdcall hk_TerminateProcess(HANDLE hproc, UINT exitcode)
 			break;
 	}
 
-	bool result = false;
+	BOOL result = 0;
 	if (~e.flags & api_hook_flags::DONT_CALL_ORIGINAL)
 		result = o_TerminateProcess(hproc, exitcode);
 
