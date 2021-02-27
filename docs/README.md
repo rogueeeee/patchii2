@@ -19,6 +19,27 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 
 ## Features
 
+<details>
+<summary>Utilities module (utils)</summary>
+
+* Thread Manager
+    * Suspend
+    * Resume
+    * Terminate
+
+* Windows API Intercept: TerminateProcess
+    * Log calls
+    * Immediately return
+    * Filter by process name
+
+* Windows API Intercept: MessageBoxA
+    * Log calls
+    * Immediately respond
+    * Disable parent window handle
+    * Modify text and caption
+
+</details>
+
 ## Usage
 * Requires [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) to be installed.
 
@@ -32,18 +53,20 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 4. Press Load
 
 ## Development
-[Repository Branches](#Repository-Branches) • [Prerequisite](#Prerequisite) • [Project Structure](#Project-Structure) • [Setup](#Setup) • [Building](#Building)
+Information:
+* [Repository Branches](#Repository-Branches) - The different branches that exist for this repository and what they are for.
+* [Project Structure](#Project-Structure) - Brief description of what each folder in the project is for.
+
+Develoment:
+* [Prerequisite](#Prerequisite) - Requirements for the project
+* [Setup](#Setup) - Setting up the project
+* [Building](#Building) - Building the entire project to produce the final binary
 
 ### Repository-Branches
 | Name                                                        | Description                                               |
 | ----------------------------------------------------------- | --------------------------------------------------------- |
 | [master](https://github.com/rogueeeee/patchii2/tree/master) | Main branch of the repo where all changes are committed   |
 | [stable](https://github.com/rogueeeee/patchii2/tree/stable) | Branch where only stable states of the repo is committed  |
-
-### Prerequisite
-* Windows
-* [DirectX SDK](https://www.microsoft.com/en-ph/download/details.aspx?id=10568)
-* [Visual Studio 2019](https://visualstudio.microsoft.com/)
 
 ### Project-Structure
 
@@ -56,6 +79,11 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 | loader\      | Contains the loader project used for selecting the target process and deploying the appropriate injector for the target        |
 | thirdparty\  | Contains 3rd-Party code and libraries.                                                                                         |
 | utils\       | Contains general purpose utility code/libraries.                                                                               |
+
+### Prerequisite
+* Windows
+* [DirectX SDK](https://www.microsoft.com/en-ph/download/details.aspx?id=10568)
+* [Visual Studio 2019](https://visualstudio.microsoft.com/)
 
 ### Setup
 * Project can be accessed through the solution file (**patchii2.sln**) in Visual Studio. Most of the things are already configured.
