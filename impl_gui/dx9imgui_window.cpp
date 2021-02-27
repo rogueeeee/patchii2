@@ -33,17 +33,9 @@ bool dx9imgui_window::import_dx9()
 	HMODULE d3d9 = LoadLibraryW(L"d3d9.dll");
 	if (!d3d9)
 		return false;
-
-	HMODULE d3dx9_43 = LoadLibraryW(L"d3dx9_43.dll");
-	if (!d3dx9_43)
-		return false;
-
+	
 	this->imported_Direct3DCreate9 = reinterpret_cast<decltype(dx9imgui_window::imported_Direct3DCreate9)>(GetProcAddress(d3d9, "Direct3DCreate9"));
 	if (!this->imported_Direct3DCreate9)
-		return false;
-
-	this->imported_D3DXCreateTextureFromFileInMemoryEx = reinterpret_cast<decltype(dx9imgui_window::imported_D3DXCreateTextureFromFileInMemoryEx)>(GetProcAddress(d3dx9_43, "D3DXCreateTextureFromFileInMemoryEx"));
-	if (!this->imported_D3DXCreateTextureFromFileInMemoryEx)
 		return false;
 
 	return true;
@@ -202,15 +194,21 @@ void dx9imgui_window::render_toggle(bool should_render_)
 
 LPDIRECT3DTEXTURE9 dx9imgui_window::make_texture_from_memory(void *bin, UINT bin_size, UINT width, UINT height)
 {
-	LPDIRECT3DTEXTURE9 result = nullptr;
-
-	if (this->imported_D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) != D3D_OK)
+	if (!this->imported_D3DXCreateTextureFromFileInMemoryEx)
 	{
-		DWORD err = GetLastError();
-		return nullptr;
+		HMODULE d3dx9_43 = LoadLibraryW(L"d3dx9_43.dll");
+		if (!d3dx9_43)
+			return nullptr;
+
+		this->imported_D3DXCreateTextureFromFileInMemoryEx = reinterpret_cast<decltype(dx9imgui_window::imported_D3DXCreateTextureFromFileInMemoryEx)>(GetProcAddress(d3dx9_43, "D3DXCreateTextureFromFileInMemoryEx"));
+		if (!this->imported_D3DXCreateTextureFromFileInMemoryEx)
+			return nullptr;
 	}
 
-	return result;
+	if (LPDIRECT3DTEXTURE9 result = nullptr; this->imported_D3DXCreateTextureFromFileInMemoryEx(this->dxdevice, bin, bin_size, width, height, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, NULL, nullptr, nullptr, &result) == D3D_OK)
+		return result;
+
+	return nullptr;
 }
 
 LPDIRECT3DDEVICE9 dx9imgui_window::get_device()

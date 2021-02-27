@@ -147,7 +147,7 @@ void patchii_draw_imgui()
 			// Console toggle
 			static bool toggle_console = IsWindowVisible(reinterpret_cast<HWND>(console::get_hwnd()));
 			if (ImGui::Checkbox("Show console", &toggle_console))
-				ShowWindow((HWND)console::get_hwnd(), toggle_console ? SW_SHOW : SW_HIDE);
+				ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), toggle_console ? SW_SHOW : SW_HIDE);
 
 			// CPU Limiter
 			ImGui::Checkbox("Unfocused CPU Limiter", &patchii_ufocus_cpu_limiter);
