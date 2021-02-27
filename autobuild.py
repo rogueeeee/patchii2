@@ -106,8 +106,9 @@ shutil.copyfile("build/Release_x64/patchii_loader.exe", "build/final/patchii_x64
 
 if upx_enabled:
     print("\nPACKING\n")
-    run_upx("build/final/patchii_x86.exe")
-    run_upx("build/final/patchii_x64.exe")
+    if os.system("upx build/final/patchii_x86.exe build/final/patchii_x64.exe -9 -v") is not 0:
+        print("FAILED TO PACK BINARIES")
+        exit(1)
 
 os.startfile(os.path.realpath("build/final"))
 

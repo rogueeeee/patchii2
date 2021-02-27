@@ -1,5 +1,9 @@
 # patchii2
 
+![](https://flat.badgen.net/github/release/rogueeeee/patchii2)
+![](https://flat.badgen.net/github/issues/rogueeeee/patchii2)
+![](https://flat.badgen.net/github/license/rogueeeee/patchii2)
+
 ![](demoss.png)
 
 <table>
