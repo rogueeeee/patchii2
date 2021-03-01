@@ -11,7 +11,7 @@ public:
 private:
 	std::uintptr_t pad0[5];
 public:
-	std::uintptr_t dll_base;
+	std::uint8_t *dll_base;
 private:
 	std::uintptr_t pad1;
 public:

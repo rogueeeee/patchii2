@@ -151,9 +151,6 @@ void dx9imgui_window::run()
 
 		if (this->should_render)
 		{
-			this->dxdevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-			this->dxdevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-			this->dxdevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 			this->dxdevice->Clear(NULL, NULL, D3DCLEAR_TARGET, this->clear_color, 1.f, NULL);
 
 			ImGui_ImplDX9_NewFrame();

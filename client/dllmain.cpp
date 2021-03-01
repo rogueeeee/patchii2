@@ -6,6 +6,9 @@
 #include "globals.h"
 #include "patchii.h"
 
+#include <pattern_scanner.h>
+#include <winternal.h>
+
 struct entry_info_t
 {
     HMODULE hModule;
@@ -34,8 +37,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
                 << "\n\t0x" << entry_info.lpReserved;
 
             patchii_run();
-
             FreeConsole();
+
         }
         else
         {
