@@ -27,6 +27,8 @@ public:
 };
 
 bool ldr_data_table_entry_next(ldr_data_table_entry *&dest);
+ldr_data_table_entry *ldr_data_table_entry_find(const wchar_t *name);
+bool ldr_data_table_entry_find(const wchar_t *name, ldr_data_table_entry *&dest);
 
 bool pe_validate_dosheader(void *base);
 PIMAGE_DOS_HEADER pe_get_dosheaderptr(void *base);

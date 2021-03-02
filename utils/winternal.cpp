@@ -47,6 +47,31 @@ bool ldr_data_table_entry_next(ldr_data_table_entry *&dest)
     return true;
 }
 
+ldr_data_table_entry *ldr_data_table_entry_find(const wchar_t *name)
+{
+    ldr_data_table_entry *entry = nullptr;
+    while (ldr_data_table_entry_next(entry))
+    {
+        if (!entry->dll_base)
+            continue;
+
+        if (wcscmp(entry->base_dll_name, name) == 0)
+            return entry;
+    }
+
+    return nullptr;
+}
+
+bool ldr_data_table_entry_find(const wchar_t *name, ldr_data_table_entry *&dest)
+{
+    dest = ldr_data_table_entry_find(name);
+
+    if (!dest)
+        return false;
+
+    return true;
+}
+
 bool pe_validate_dosheader(void *base)
 {
     return reinterpret_cast<PIMAGE_DOS_HEADER>(base)->e_magic == IMAGE_DOS_SIGNATURE;
