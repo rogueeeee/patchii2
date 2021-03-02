@@ -16,12 +16,14 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)arch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)console.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hook.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pattern_scanner.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)string_utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)winternal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)console.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hook\hook_nearcall86.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pattern_scanner.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)string_utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)winternal.cpp" />

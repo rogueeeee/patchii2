@@ -23,7 +23,7 @@ bool hook_nearcall86(void *call_location, void *hook_func, void **original_addre
 	if (!VirtualProtect(operand, sizeof(std::uintptr_t), PAGE_EXECUTE_READWRITE, &prot))
 		return false;
 
-	*operand = next_instruction_address - reinterpret_cast<std::uintptr_t>(hook_func);
+	*operand = reinterpret_cast<std::uintptr_t>(hook_func) - next_instruction_address;
 
 	if (!VirtualProtect(operand, sizeof(std::uintptr_t), prot, &prot))
 		return false;
