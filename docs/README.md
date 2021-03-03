@@ -59,6 +59,7 @@ Information:
 
 Develoment:
 * [Prerequisite](#Prerequisite) - Requirements for the project
+* [Cloning](#Cloning) - Creating a local repository of the project (Copying/Downloading the source)
 * [Setup](#Setup) - Setting up the project
 * [Building](#Building) - Building the entire project to produce the final binary
 
@@ -85,6 +86,12 @@ Develoment:
 * [DirectX SDK](https://www.microsoft.com/en-ph/download/details.aspx?id=10568)
 * [Visual Studio 2019](https://visualstudio.microsoft.com/)
 
+### Cloning
+* This requires [git](https://git-scm.com/download/win) to be installed
+1. Open a command prompt
+2. Change directory to where you want to clone the repository
+3. Execute the command `git clone https://github.com/rogueeeee/patchii2.git`
+
 ### Setup
 * Project can be accessed through the solution file (**patchii2.sln**) in Visual Studio. Most of the things are already configured.
 * It is recommended to use the **Show All Files** view mode for the Solution Explorer.
@@ -93,7 +100,7 @@ Develoment:
 ### Building
 [Auto Build](#Auto-Build) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
 
-You can use the stable branch of the repo for stability
+You can switch to the *stable* branch of the repository for stability, This can be done by executing the command `git switch stable`.
 
 #### Auto-Build
 A python script is provided to automatically setup the required binary headers and build the entire project.

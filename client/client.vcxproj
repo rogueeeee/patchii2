@@ -194,6 +194,8 @@
     <ClCompile Include="api_hooks.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="modules\modules.cpp" />
+    <ClCompile Include="modules\module_handycafe\module_handycafe.cpp" />
+    <ClCompile Include="modules\module_handycafe\spoof_fgwtitle_query.cpp" />
     <ClCompile Include="modules\module_utilities\api_intercept\api_int_messageboxa.cpp" />
     <ClCompile Include="modules\module_utilities\api_intercept\api_int_terminateprocess.cpp" />
     <ClCompile Include="modules\module_utilities\module_utilities.cpp" />
@@ -206,6 +208,8 @@
     <ClInclude Include="bin_header\patchii_img_128x201.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="modules\modules.h" />
+    <ClInclude Include="modules\module_handycafe\module_handycafe.h" />
+    <ClInclude Include="modules\module_handycafe\spoof_fgwtitle_query.h" />
     <ClInclude Include="modules\module_utilities\api_intercept\api_int_messageboxa.h" />
     <ClInclude Include="modules\module_utilities\api_intercept\api_int_terminateprocess.h" />
     <ClInclude Include="modules\module_utilities\module_utilities.h" />

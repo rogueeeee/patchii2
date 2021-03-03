@@ -13,24 +13,9 @@ bool console::initialize()
 		freopen_s(&file_ptr, "CONOUT$", "w", stdout);
 		freopen_s(&file_ptr, "CONOUT$", "w", stderr);
 		freopen_s(&file_ptr, "CONIN$", "r", stdin);
-		std::cout.clear();
-		std::clog.clear();
-		std::cerr.clear();
-		std::cin.clear();
-
-		HANDLE _handle_con_out = CreateFileW(L"CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		HANDLE _handle_con_in = CreateFileW(L"CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		SetStdHandle(STD_OUTPUT_HANDLE, _handle_con_out);
-		SetStdHandle(STD_ERROR_HANDLE, _handle_con_out);
-		SetStdHandle(STD_INPUT_HANDLE, _handle_con_in);
-
-		handle_con_out = _handle_con_out;
-	}
-	else
-	{
-		handle_con_out = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
 
+	handle_con_out = GetStdHandle(STD_OUTPUT_HANDLE);
 	handle_con_wnd = GetConsoleWindow();
 	return handle_con_out && handle_con_wnd;
 }

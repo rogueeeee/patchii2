@@ -7,6 +7,7 @@
 #include "module_utilities/module_utilities.h"
 
 #ifdef _M_IX86 // x86 modules - Place module here if it only works for x86
+#include "module_handycafe/module_handycafe.h"
 #elif _M_X64   // x64 modules - Place module here if it only works for x64
 #endif
 
@@ -20,6 +21,7 @@ void patchii_get_registered_modules(std::vector<patchii_module_base *> &dest)
 		patchii_register_module(module_utilities)
 
 		#ifdef _M_IX86 // x86 modules - Place module here if it only works for x86
+		patchii_register_module(module_handycafe)
 		#elif _M_X64   // x64 modules - Place module here if it only works for x64
 		#endif
 	};

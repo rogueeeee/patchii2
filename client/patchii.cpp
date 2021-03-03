@@ -317,7 +317,9 @@ bool patchii_run()
 	patchii_get_registered_modules(patchii_modules);
 
 	// Hide the console window at this point as it is not as necessary
+	#ifndef _DEBUG
 	ShowWindow(reinterpret_cast<HWND>(console::get_hwnd()), SW_HIDE);
+	#endif
 
 	dx9imgui_window::get().show();
 	dx9imgui_window::get().run();
