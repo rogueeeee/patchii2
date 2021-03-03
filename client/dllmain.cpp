@@ -1,8 +1,6 @@
 #include <Windows.h>
 #include <console.h>
-
 #include <memory>
-
 #include "globals.h"
 #include "patchii.h"
 
