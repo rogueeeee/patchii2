@@ -39,7 +39,7 @@ int __stdcall hk_GetWindowTextGeneric(HWND hwnd, void *string, int maxcount)
         wcscpy_s(reinterpret_cast<wchar_t *>(string), maxcount, w_buff);
     }
 
-    return strlen(spoof_txt_buff);
+    return static_cast<int>(strlen(spoof_txt_buff));
 }
 
 bool load_mode_by_match(ldr_data_table_entry *hndy_entry, void *&result_dest)
