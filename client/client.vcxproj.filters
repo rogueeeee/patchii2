@@ -45,7 +45,7 @@
     <ClCompile Include="modules\module_handycafe\module_handycafe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\module_handycafe\spoof_fgwtitle_query.cpp">
+    <ClCompile Include="modules\module_handycafe\spoof_apptitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,7 +83,7 @@
     <ClInclude Include="modules\module_handycafe\module_handycafe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modules\module_handycafe\spoof_fgwtitle_query.h">
+    <ClInclude Include="modules\module_handycafe\spoof_apptitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
