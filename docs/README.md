@@ -1,8 +1,8 @@
 # patchii2
 
-![](https://img.shields.io/github/release/rogueeeee/patchii2?style=for-the-badge)
-![](https://img.shields.io/github/issues/rogueeeee/patchii2?style=for-the-badge)
-![](https://img.shields.io/github/license/rogueeeee/patchii2?style=for-the-badge)
+[![release](https://img.shields.io/github/release/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/releases)
+[![issues](https://img.shields.io/github/issues/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/issues)
+[![license](https://img.shields.io/github/license/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/blob/master/LICENSE)
 
 
 ![](res/demoss.png)
