@@ -4,11 +4,11 @@
 ![](https://flat.badgen.net/github/issues/rogueeeee/patchii2)
 ![](https://flat.badgen.net/github/license/rogueeeee/patchii2)
 
-![](demoss.png)
+![](res/demoss.png)
 
 <table>
     <tr>
-        <td><img src="patchii_img_128x201.png"/></td>
+        <td><img src="res/patchii_img_128x201.png"/></td>
         <td><b>patchii2</b><br>module based anemic internet cafe poking tool</td>
     </tr>
 </table>
@@ -51,7 +51,7 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 ## Usage
 * Requires [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) to be installed.
 
-![](loader.png)
+![](res/loader.png)
 1. Run the patchii loader
 2. Select the target process
     * An "*auto*" button is available to automatically detect the process name based off a predefined list
@@ -103,7 +103,8 @@ Develoment:
 ### Setup
 * Project can be accessed through the solution file (**patchii2.sln**) in Visual Studio. Most of the things are already configured.
 * It is recommended to use the **Show All Files** view mode for the Solution Explorer.
-![](vs_showfiles.png)
+
+![](res/vs_showfiles.png)
 
 ### Building
 [Auto Build](#Auto-Build) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
@@ -205,7 +206,7 @@ A python script is provided to automatically setup the required binary headers a
 
 ##### Dumping-to-binary-using-HxD
 * You can use tools like [HxD](https://mh-nexus.de/en/hxd/) to dump the binary files into C arrays
-    ![](hxd_dump.png)
+    ![](res/hxd_dump.png)
 
 ## Module-Development
 All modules are implemented in **client\modules**.
