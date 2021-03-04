@@ -1,8 +1,9 @@
 # patchii2
 
-![](https://flat.badgen.net/github/release/rogueeeee/patchii2)
-![](https://flat.badgen.net/github/issues/rogueeeee/patchii2)
-![](https://flat.badgen.net/github/license/rogueeeee/patchii2)
+![](https://img.shields.io/github/release/rogueeeee/patchii2?style=for-the-badge)
+![](https://img.shields.io/github/issues/rogueeeee/patchii2?style=for-the-badge)
+![](https://img.shields.io/github/license/rogueeeee/patchii2?style=for-the-badge)
+
 
 ![](res/demoss.png)
 
