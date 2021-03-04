@@ -40,6 +40,14 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 
 </details>
 
+<details>
+<summary>handyCafe module (handycafe)</summary>
+
+* Spoofer
+    * Application Title
+
+</details>
+
 ## Usage
 * Requires [DirectX 9](https://github.com/rogueeeee/patchii2/releases/tag/directx_installer) to be installed.
 
