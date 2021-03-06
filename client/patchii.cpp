@@ -11,7 +11,6 @@
 
 #include "api_hooks.h"
 #include "modules/modules.h"
-#include "bin_header/patchii_img_128x201.h"
 
 enum class e_close_mode
 {
@@ -79,21 +78,8 @@ LRESULT CALLBACK patchii_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void patchii_draw_window_about()
 {
-	{
-		static auto print_once = []() -> auto
-		{
-			console::print_warning("Due to a texture being loaded, patchii may crash if the window gets resized. (https://github.com/rogueeeee/patchii2/issues/1)");
-			return true;
-		} ();
-	}
-
 	if (ImGui::Begin("About", &patchii_about_window_visible, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize))
 	{
-		// TODO: fix crash when resizing with a loaded texture
-		if (static LPDIRECT3DTEXTURE9 patchii_image = nullptr; patchii_image || (patchii_image = dx9imgui_window::get().make_texture_from_memory(patchii_img_bin, sizeof(patchii_img_bin), 128, 201)) )
-			ImGui::Image(patchii_image, ImVec2{ 128.f, 201.f });
-
-		ImGui::SameLine();
 		ImGui::Text(
 			PATCHII_DESCRIPTION "\n"
 			"\n"

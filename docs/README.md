@@ -45,7 +45,7 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 <summary>handyCafe module (handycafe)</summary>
 
 * Spoof
-    * Spoof Foreground Query
+    * Foreground Query
         * Application Title
         * Application Class Name
         * Application Process Name
