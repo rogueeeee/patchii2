@@ -195,7 +195,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="modules\modules.cpp" />
     <ClCompile Include="modules\module_handycafe\module_handycafe.cpp" />
-    <ClCompile Include="modules\module_handycafe\spoof_apptitle.cpp" />
+    <ClCompile Include="modules\module_handycafe\spoof_fgquery.cpp" />
     <ClCompile Include="modules\module_utilities\api_intercept\api_int_messageboxa.cpp" />
     <ClCompile Include="modules\module_utilities\api_intercept\api_int_terminateprocess.cpp" />
     <ClCompile Include="modules\module_utilities\module_utilities.cpp" />
@@ -209,7 +209,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="modules\modules.h" />
     <ClInclude Include="modules\module_handycafe\module_handycafe.h" />
-    <ClInclude Include="modules\module_handycafe\spoof_apptitle.h" />
+    <ClInclude Include="modules\module_handycafe\spoof_fgquery.h" />
     <ClInclude Include="modules\module_utilities\api_intercept\api_int_messageboxa.h" />
     <ClInclude Include="modules\module_utilities\api_intercept\api_int_terminateprocess.h" />
     <ClInclude Include="modules\module_utilities\module_utilities.h" />

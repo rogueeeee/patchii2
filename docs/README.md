@@ -44,8 +44,11 @@ Contributions through PR's are always welcome, check the [Issues](https://github
 <details>
 <summary>handyCafe module (handycafe)</summary>
 
-* Spoofer
-    * Application Title
+* Spoof
+    * Spoof Foreground Query
+        * Application Title
+        * Application Class Name
+        * Application Process Name
 
 </details>
 
@@ -66,7 +69,7 @@ Information:
 * [Repository Branches](#Repository-Branches) - The different branches that exist for this repository and what they are for.
 * [Project Structure](#Project-Structure) - Brief description of what each folder in the project is for.
 
-Develoment:
+Development:
 * [Prerequisite](#Prerequisite) - Requirements for the project
 * [Cloning](#Cloning) - Creating a local repository of the project (Copying/Downloading the source)
 * [Setup](#Setup) - Setting up the project

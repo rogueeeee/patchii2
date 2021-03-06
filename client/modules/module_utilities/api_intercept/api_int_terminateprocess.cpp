@@ -22,7 +22,7 @@ struct mode_type
 static bool is_active      = false;
 static bool window_visible = false;
 static bool log_intercept   = false;
-static int  mode           = mode_type::DO_NOTHING;
+static int  mode_title           = mode_type::DO_NOTHING;
 static int  default_return = 1;
 static std::vector<std::pair<std::string, bool>> proc_name_filter;
 
@@ -79,7 +79,7 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE &proc, UINT &exi
         return;
     
     char mod_name_buff[MAX_PATH] = { '\0' };
-    if (log_intercept || mode == mode_type::FILTER_BY_NAME)
+    if (log_intercept || mode_title == mode_type::FILTER_BY_NAME)
     {
         if (!GetProcessImageFileNameA(proc, mod_name_buff, MAX_PATH))
             console::print_warning("Failed to obtain module file name. Error code: " + std::to_string(GetLastError()));
@@ -95,7 +95,7 @@ void __stdcall apicb_TerminateProcess(api_hook_event &e, HANDLE &proc, UINT &exi
                   << "\n\t        Module: "   << mod_name_buff;
     }
 
-    switch (mode)
+    switch (mode_title)
     {
         case mode_type::IMMEDIATELY_RETURN:
         {
@@ -141,7 +141,7 @@ bool api_int_terminateprocess_unload()
     window_visible     = false;
     is_active          = false;
     log_intercept      = false;
-    mode               = mode_type::DO_NOTHING;
+    mode_title               = mode_type::DO_NOTHING;
     
     proc_name_filter.clear();
     return true;
@@ -163,14 +163,14 @@ void api_int_terminateprocess_draw_window()
         ImGui::Checkbox("Log intercept", &log_intercept);
         ImGui::NewLine();
 
-        ImGui::RadioButton("Do nothing", &mode, mode_type::DO_NOTHING);
+        ImGui::RadioButton("Do nothing", &mode_title, mode_type::DO_NOTHING);
 
         static const char *opt[] = { "Failed", "Success" };
-        ImGui::RadioButton("Immediately Return", &mode, mode_type::IMMEDIATELY_RETURN);
+        ImGui::RadioButton("Immediately Return", &mode_title, mode_type::IMMEDIATELY_RETURN);
         ImGui::SameLine();
         ImGui::Combo("##default_return", &default_return, opt, IM_ARRAYSIZE(opt));
 
-        ImGui::RadioButton("Filter by Processs name", &mode, mode_type::FILTER_BY_NAME);
+        ImGui::RadioButton("Filter by Processs name", &mode_title, mode_type::FILTER_BY_NAME);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Immediately returns successful only for the\nselected process without calling the original API");
 

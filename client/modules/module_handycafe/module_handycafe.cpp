@@ -4,7 +4,7 @@
 #include <winternal.h>
 #include <imgui.h>
 
-#include "spoof_apptitle.h"
+#include "spoof_fgquery.h"
 
 static bool loaded = false;
 static ldr_data_table_entry *hnd_mod_entry = nullptr;
@@ -23,7 +23,7 @@ bool module_handycafe::load()
 			  << "\n\tBase address: 0x" << reinterpret_cast<void *>(hnd_mod_entry->dll_base)
 		      << "\n\t  Image Size: " << hnd_mod_entry->size_of_image;
 
-	spoof_apptitle_load(hnd_mod_entry);
+	spoof_fgquery_load(hnd_mod_entry);
 
 	loaded = true;
 	return true;
@@ -31,7 +31,7 @@ bool module_handycafe::load()
 
 bool module_handycafe::unload()
 {
-	spoof_apptitle_unload();
+	spoof_fgquery_unload();
 
 	hnd_mod_entry = nullptr;
 	loaded = false;
@@ -49,8 +49,8 @@ void module_handycafe::draw_imgui_mainmenubar()
 	{
 		if (ImGui::BeginMenu("Spoof"))
 		{
-			if (ImGui::MenuItem("Application Title", nullptr, nullptr, spoof_apptitle_is_loaded()))
-				spoof_apptitle_toggle_window();
+			if (ImGui::MenuItem("Foreground Window Query", nullptr, nullptr, spoof_fgquery_is_loaded()))
+				spoof_fgquery_toggle_window();
 
 			ImGui::EndMenu();
 		}
@@ -61,5 +61,5 @@ void module_handycafe::draw_imgui_mainmenubar()
 
 void module_handycafe::draw_imgui()
 {
-	spoof_apptitle_draw_window();
+	spoof_fgquery_draw_window();
 }
