@@ -204,8 +204,8 @@ A python script is provided to automatically setup the required binary headers a
         }
         ```
 
-    * Make sure to dump the appropriate DLL builds to the appropriate platform header (eg. **build\Release_Win32\patchii_client.dll** to **injector\binaries\bin_x86.h**).
-    * It's recommended to use client release builds.
+    * Make sure to dump the appropriate injector builds to the appropriate platform header (eg. **build\Release_Win32\patchii_injector.exe** to **injector\binaries\bin_x86.h**).
+    * It's recommended to use injector release builds.
 4. Configure it to your target build, and then start the build.
 
 ##### Dumping-to-binary-using-HxD
