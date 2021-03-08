@@ -144,4 +144,5 @@ A python script is provided to automatically setup the required binary headers a
 
 #### Dumping-to-binary-using-HxD
 * You can use tools like [HxD](https://mh-nexus.de/en/hxd/) to dump the binary files into C arrays
-    ![](res/hxd_dump.png)
+
+![](res/hxd_dump.png)

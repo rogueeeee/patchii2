@@ -18,9 +18,12 @@ enum class ptrn_ver
 
 static bool window_visible = false;
 
-static bool      spoof_title_active = false;
-static bool      spoof_title_available = false;
-static ptrn_ver  spoof_title_mode = ptrn_ver::UNKNOWN;
+// ========================================================
+// Title spoofing
+// ========================================================
+static bool      spoof_title_active           = false;
+static bool      spoof_title_available        = false;
+static ptrn_ver  spoof_title_mode             = ptrn_ver::UNKNOWN;
 static char      spoof_title_buffer[MAX_PATH] = { L'\0' };
 static void     *spoof_title_call_instruction = nullptr;
 
@@ -44,6 +47,8 @@ static int __stdcall hk_GetWindowTextGeneric(HWND hwnd, void *string, int maxcou
     return static_cast<int>(strlen(spoof_title_buffer));
 }
 
+// =========================================================================================
+
 static bool spoof_class_active = false;
 static bool spoof_class_available = false;
 static char spoof_class_buffer[MAX_PATH] = { L'\0' };
@@ -54,8 +59,11 @@ static char spoof_procname_buffer[MAX_PATH] = { L'\0' };
 
 bool spoof_fgquery_load(ldr_data_table_entry *hndy_entry)
 {
-    console::status_print stat_load_title("Loading Application Title spoofer...");
 
+    // ========================================================
+    // Load application title spoofer
+    // ========================================================
+    console::status_print stat_load_title("Loading Application Title spoofer...");
     std::cout << "\n\tScanning for GetWindowText pattern... ";
     if (std::uint8_t *title_ptrn_result_v3a = pattern_scan(hndy_entry->dll_base, hndy_entry->size_of_image, "\x68\x00\x00\x00\x00\x8B\x45\xF8\xE8\x00\x00\x00\x00\x50\x8B\x85", "x????xxxx????xxx"); title_ptrn_result_v3a)
     {
@@ -70,13 +78,13 @@ bool spoof_fgquery_load(ldr_data_table_entry *hndy_entry)
     
     if (spoof_title_call_instruction)
     {
-        std::cout << "\n\tHooking call instruction... "
-                     "\n\t\tCall instruction: 0x" << spoof_title_call_instruction
-                  << "\n\t\t    Hook address: 0x" << hk_GetWindowTextGeneric;
+        std::cout << "\n\t>> Hooking call instruction... "
+                     "\n\t\t>> Call instruction: 0x" << spoof_title_call_instruction
+                  << "\n\t\t>>     Hook address: 0x" << hk_GetWindowTextGeneric;
 
         if (hook_nearcall86(spoof_title_call_instruction, hk_GetWindowTextGeneric, reinterpret_cast<void **>(&o_GetWindowTextGeneric)))
         {
-            std::cout << "\n\t\tOriginal address: 0x" << o_GetWindowTextGeneric;
+            std::cout << "\n\t\t>> Original address: 0x" << o_GetWindowTextGeneric;
             spoof_title_available = true;
         }
     }
@@ -86,17 +94,22 @@ bool spoof_fgquery_load(ldr_data_table_entry *hndy_entry)
     else
         stat_load_title.fail();
 
+    // ========================================================
+
     return true;
 }
 
 bool spoof_fgquery_unload()
 {
     std::cout << "Unloading handycafe foreground query...";
-
-    spoof_title_active = false;
     window_visible = false;
-    spoof_title_available = false;
-    spoof_title_mode = ptrn_ver::UNKNOWN;
+
+    // ========================================================
+    // Unload application title spoofer
+    // ========================================================
+    spoof_title_active           = false;
+    spoof_title_available        = false;
+    spoof_title_mode             = ptrn_ver::UNKNOWN;
     spoof_title_call_instruction = nullptr;
     ZeroMemory(spoof_title_buffer, sizeof(spoof_title_buffer));
 
@@ -106,11 +119,17 @@ bool spoof_fgquery_unload()
         o_GetWindowTextGeneric = nullptr;
     }
 
-    spoof_class_active = false;
+    // ========================================================
+    // Unload application class spoofer
+    // ========================================================
+    spoof_class_active    = false;
     spoof_class_available = false;
     ZeroMemory(spoof_class_buffer, sizeof(spoof_class_buffer));
 
-    spoof_procname_active = false;
+    // ========================================================
+    // Unload application process name spoofer
+    // ========================================================
+    spoof_procname_active    = false;
     spoof_procname_available = false;
     ZeroMemory(spoof_procname_buffer, sizeof(spoof_procname_buffer));
 

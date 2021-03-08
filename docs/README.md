@@ -14,7 +14,7 @@
     </tr>
 </table>
 
-[Features](#Features) • [Usage](#Usage) • [Development](development.md) • [Module Development](module_dev.md) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
+[Features](#Features) • [Usage](#Usage) • [Change Logs](change_logs.md) • [Development](development.md) • [Module Development](module_dev.md) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
 
 Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) page for things that you might be able to help with.
 

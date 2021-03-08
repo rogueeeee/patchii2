@@ -38,7 +38,7 @@ static std::string                    status_txt;
 
 static const char *known_target_procnames[] =
 {
-	""
+	"hnclient.exe"
 };
 
 bool update_proc_list_cache()

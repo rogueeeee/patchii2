@@ -19,9 +19,9 @@ bool module_handycafe::load()
 	if (!console::status_print("Obtaining hndclient module from data table entries...").autoset(ldr_data_table_entry_find(L"hndclient.exe", hnd_mod_entry)))
 		return false;
 
-	std::cout << "\n\tEntry struct: 0x" << hnd_mod_entry
-			  << "\n\tBase address: 0x" << reinterpret_cast<void *>(hnd_mod_entry->dll_base)
-		      << "\n\t  Image Size: " << hnd_mod_entry->size_of_image;
+	std::cout << "\n\t>> Entry struct: 0x" << hnd_mod_entry
+			  << "\n\t>> Base address: 0x" << reinterpret_cast<void *>(hnd_mod_entry->dll_base)
+		      << "\n\t>>   Image Size: " << hnd_mod_entry->size_of_image << " byte(s)";
 
 	spoof_fgquery_load(hnd_mod_entry);
 
