@@ -126,8 +126,8 @@ bool patchii_apihooks_enable()
 	console::status_print stat_commitapi("Committing all API hooks");
 	stat_commitapi.autoset(MH_EnableHook(MH_ALL_HOOKS) == MH_OK);
 
-	start_of_dll = globals::dll_base;
-	end_of_dll   = globals::dll_base + pe_get_ntheaderptr(globals::dll_handle)->OptionalHeader.SizeOfImage;
+	start_of_dll = globals::dll.base;
+	end_of_dll   = globals::dll.base + pe_get_ntheaderptr(globals::dll.handle)->OptionalHeader.SizeOfImage;
 
 	return true;
 }

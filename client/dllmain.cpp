@@ -19,17 +19,16 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     entry_info = { hModule, ul_reason_for_call, lpReserved };
     HANDLE entry_thread = CreateThread(nullptr, NULL, [](LPVOID params) -> DWORD
     {
-        globals::dll_handle = entry_info.hModule;
-        globals::dll_base   = entry_info.hModule ? reinterpret_cast<std::uint8_t *>(entry_info.hModule) : nullptr /* used later when manually mapped and lpReserved is used for passing info */ ;
-        
+        globals::dll.handle = entry_info.hModule;
+
         if (console::initialize())
         {
             console::print_warning("Do not close this window until patchii is completely unloaded.");
 
             std::cout << "\nEntry point:"
-                << "\n\t0x" << entry_info.hModule
-                << "\n\t" << entry_info.ul_reason_for_call
-                << "\n\t0x" << entry_info.lpReserved;
+                      << "\n\t0x" << entry_info.hModule
+                      << "\n\t"   << entry_info.ul_reason_for_call
+                      << "\n\t0x" << entry_info.lpReserved;
 
             patchii_run();
             FreeConsole();
