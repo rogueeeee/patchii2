@@ -29,7 +29,7 @@ Development:
 
 ## Prerequisite
 * Windows
-* [DirectX SDK](https://www.microsoft.com/en-ph/download/details.aspx?id=10568)
+* [DirectX SDK](https://www.microsoft.com/en-au/download/details.aspx?id=6812)
 * [Visual Studio 2019](https://visualstudio.microsoft.com/)
 
 ## Cloning
@@ -45,15 +45,17 @@ Development:
 ![](res/vs_showfiles.png)
 
 ## Building
-[Auto Build](#Auto-Build) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
+[Build script](#Build-Script) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
 
 You can switch to the *stable* branch of the repository for stability, This can be done by executing the command `git switch stable`.
 
-### Auto-Build
+### Build-Script
 A python script is provided to automatically setup the required binary headers and build the entire project.
 * Prerequisite:
     * [Python 3](https://www.python.org/downloads/windows/) must be installed.
     * The **msbuild** directory should be included in your environment's path variable
+
+**Usage:**
 1. Open a command prompt
 2. Change directory into the folder
 
@@ -64,8 +66,16 @@ A python script is provided to automatically setup the required binary headers a
 3. Run the build script
 
     ```bat
-    py autobuild.py
+    py build.py <optional parameters>
     ```
+
+    | Parameter     | Description                                                                      |
+    | ------------- | -------------------------------------------------------------------------------- |
+    | -noupx / -upx | Toggles UPX compression after full build.                                        |
+    | -bd.client    | Sets the build depth to 0. Only builds the client project.                       |
+    | -bd.injector  | Sets the build depth to 1. Only builds the client and injector project.          |
+    | -bd.loader    | Sets the build depth to 2. Only builds the client, injector, and loader project. |
+    | -bd.full      | Sets the build depth to maximum. Builds the entire project.                      |
 
 4. The final compiled binaries (patchii loader) should be located at **build\final**
 

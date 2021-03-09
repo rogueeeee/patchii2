@@ -207,6 +207,7 @@
     <ClInclude Include="api_hooks.h" />
     <ClInclude Include="bin_header\patchii_img_128x201.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="load_info.h" />
     <ClInclude Include="modules\modules.h" />
     <ClInclude Include="modules\module_handycafe\module_handycafe.h" />
     <ClInclude Include="modules\module_handycafe\spoof_fgquery.h" />

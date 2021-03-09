@@ -86,5 +86,8 @@
     <ClInclude Include="modules\module_handycafe\spoof_fgquery.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="load_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 #include <arch.h>
 #include <dx9imgui_window.h>
 #include <MinHook.h>
-#include <patchii_version.h>
+#include <patchii_config.h>
 
 #include "api_hooks.h"
 #include "modules/modules.h"

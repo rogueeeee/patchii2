@@ -4,3 +4,4 @@ build/
 *.obj
 patchii/
 todo.txt
+/__pycache__

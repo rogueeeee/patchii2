@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string_utils.h>
 #include <dx9imgui_window.h>
-#include <patchii_version.h>
+#include <patchii_config.h>
 
 #include <injector/injector_return_code.h>
 #include "binaries/inj_binaries.h"
