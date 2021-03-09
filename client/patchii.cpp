@@ -262,7 +262,8 @@ bool patchii_run()
 	console::set_color(console::color::LPURPLE);
 	std::cout << "\n\npatchii2\n";
 	console::set_color(console::color::LYELLOW);
-	std::cout << "build: " __DATE__ " " __TIME__ "\n\n";
+	std::cout << "version: " PATCHII_BUILD_VERSION "\n"
+				 "build date: " __DATE__ " " __TIME__ "\n\n";
 	console::set_color();
 
 	if (!console::status_print("Initializing DirectX 9 imports...").autoset(dx9imgui_window::get().import_dx9()))

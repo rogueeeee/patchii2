@@ -4,7 +4,7 @@
 
 namespace globals
 {
-	static union
+	inline union dll_
 	{
 		void         *handle { nullptr };
 		std::uint8_t *base;

@@ -127,7 +127,7 @@ bool patchii_apihooks_enable()
 	stat_commitapi.autoset(MH_EnableHook(MH_ALL_HOOKS) == MH_OK);
 
 	start_of_dll = globals::dll.base;
-	end_of_dll   = globals::dll.base + pe_get_ntheaderptr(globals::dll.handle)->OptionalHeader.SizeOfImage;
+	end_of_dll   = globals::dll.base + pe_get_ntheaderptr(globals::dll.base)->OptionalHeader.SizeOfImage;
 
 	return true;
 }
