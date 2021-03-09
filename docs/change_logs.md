@@ -1,6 +1,6 @@
 # Change Logs [![release](https://img.shields.io/github/release/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/releases)
 
-## [2021.03.04.s-1 (04/03/2021-stable-1)](https://github.com/rogueeeee/patchii2/releases/tag/2021.03.04.s-1)
+## [v2.1.0 (04/03/2021-stable-2.1.0)](https://github.com/rogueeeee/patchii2/releases/tag/2.1.0)
 <details>
 <summary>Utilities module (utils)</summary>
 

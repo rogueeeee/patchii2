@@ -35,7 +35,7 @@
 // Reflected by release tags on the main respository
 // PATCHII_BUILD_VERSION can be defined for custom builds
 #if !defined( PATCHII_BUILD_VERSION )
-	#define PATCHII_BUILD_VERSION "2021.03.04.s-1"
+	#define PATCHII_BUILD_VERSION "2.2.0"
 #endif
 //
 
