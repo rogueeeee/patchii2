@@ -10,10 +10,10 @@ Development:
 * [Building](#Building) - Building the entire project to produce the final binary
 
 ## Repository-Branches
-| Name                                                        | Description                                               |
-| ----------------------------------------------------------- | --------------------------------------------------------- |
-| [master](https://github.com/rogueeeee/patchii2/tree/master) | Main branch of the repo where all changes are committed   |
-| [stable](https://github.com/rogueeeee/patchii2/tree/stable) | Branch where only stable states of the repo is committed  |
+| Name                                                                  | Description                                               |
+| --------------------------------------------------------------------- | --------------------------------------------------------- |
+| [master](https://github.com/rogueeeee/patchii2/tree/master)           | Main branch of the repository                             |
+| [development](https://github.com/rogueeeee/patchii2/tree/development) | Development branch of the repository                      |
 
 ## Project-Structure
 
@@ -46,8 +46,6 @@ Development:
 
 ## Building
 [Build script](#Build-Script) • [Client](#Building-Client) • [Injector](#Building-Injector) • [Loader](#Building-Loader)
-
-You can switch to the *stable* branch of the repository for stability, This can be done by executing the command `git switch stable`.
 
 ### Build-Script
 A python script is provided to automatically setup the required binary headers and build the entire project.

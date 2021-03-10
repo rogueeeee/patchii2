@@ -20,9 +20,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
     entry_info = { hModule, ul_reason_for_call, reinterpret_cast<load_info_t *>(lpReserved) };
     
+    // TODO: implement reloc and iat fix when manually mapped
     #if defined ( PATCHII_LOADAS_MANUALMAPPED )
     {
-        
     }
     #endif
 
