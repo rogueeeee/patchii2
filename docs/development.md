@@ -13,7 +13,7 @@ Development:
 | Name                                                                  | Description                                                                                                      |
 | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | [master](https://github.com/rogueeeee/patchii2/tree/master)           | Main branch of the repository, mostly merged from the development branch after finalizing the current dev branch |
-| [development](https://github.com/rogueeeee/patchii2/tree/development) | Development branch of the repository, This is where all the changes are pushed until finalization                |
+| [dev](https://github.com/rogueeeee/patchii2/tree/dev)                 | Development branch of the repository, This is where all the changes are pushed until finalization                |
 
 ## Project-Structure
 

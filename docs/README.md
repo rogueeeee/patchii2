@@ -17,10 +17,10 @@
 
 ## 
 
-| Branch      | Commits                                                                                           
-|:-----------:|:------------------------------------------------------------------------------------------------- |
-| master      | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/master?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/master?style=for-the-badge)
-| development | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/development?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/development?style=for-the-badge)
+| Branch                                                      | Commits                                                                                           
+|:-----------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [master](https://github.com/rogueeeee/patchii2/tree/master) | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/master?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/master?style=for-the-badge)             |
+| [dev](https://github.com/rogueeeee/patchii2/tree/dev)       | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/development?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/development?style=for-the-badge)   |
 
 Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) page for things that you might be able to help with.
 
