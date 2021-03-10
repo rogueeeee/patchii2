@@ -4,7 +4,6 @@
 [![issues](https://img.shields.io/github/issues/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/issues)
 [![license](https://img.shields.io/github/license/rogueeeee/patchii2?style=for-the-badge)](https://github.com/rogueeeee/patchii2/blob/master/LICENSE)
 
-
 ![](res/demoss.png)
 
 <table>
@@ -15,6 +14,13 @@
 </table>
 
 [Features](#Features) • [Usage](#Usage) • [Change Logs](change_logs.md) • [Development](development.md) • [Module Development](module_dev.md) • [License](#License) • [Libraries](#Libraries) • [Credits](#Credits)
+
+## 
+
+| Branch      | Commits                                                                                           
+|:-----------:|:------------------------------------------------------------------------------------------------- |
+| master      | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/master?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/master?style=for-the-badge)
+| development | ![](https://img.shields.io/github/last-commit/rogueeeee/patchii2/development?style=for-the-badge) <br> ![](https://img.shields.io/github/commits-since/rogueeeee/patchii2/latest/development?style=for-the-badge)
 
 Contributions through PR's are always welcome, check the [Issues](https://github.com/rogueeeee/patchii2/issues) page for things that you might be able to help with.
 
