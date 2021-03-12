@@ -1,6 +1,6 @@
 #include <winternal.h>
 #include <string_utils.h>
-
+#include <patchii_config.h>
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <string>
@@ -43,21 +43,36 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	if (!proc_open)
 		return_as_code(FAILED_TO_OPEN_PROCESS);
 	
-	std::wstring dll_path;
-	do
+	#if defined( PATCHII_LOADAS_MANUALMAPPED )
 	{
-		dll_path = std::filesystem::temp_directory_path().c_str() + random_wstring() + L".dll";
-	} while(std::filesystem::exists(dll_path));
+		std::uint8_t *alloc_address = reinterpret_cast<std::uint8_t *>(VirtualAllocEx(proc_open, nullptr, pe_get_ntheaderptr(client_bin)->OptionalHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+		if (!alloc_address)
+			return_as_code(FAILED_TO_ALLOCATE);
 
-	std::ofstream dll_write(dll_path, std::ios::binary | std::ios::out);
-	if (!dll_write.is_open())
-		return_as_code(FAILED_TO_OPEN_FILE);
+		for (std::size_t idx_sect = 0; idx_sect < pe_get_ntheaderptr(client_bin)->FileHeader.NumberOfSections; idx_sect++)
+		{
 
-	dll_write.write(reinterpret_cast<const char *>(client_bin), sizeof(client_bin));
-	dll_write.close();
+		}
+	}
+	#elif defined( PATCHII_LOADAS_LOADLIB )
+	{
+		std::wstring dll_path;
+		do
+		{
+			dll_path = std::filesystem::temp_directory_path().c_str() + random_wstring() + L".dll";
+		} while (std::filesystem::exists(dll_path));
+
+		std::ofstream dll_write(dll_path, std::ios::binary | std::ios::out);
+		if (!dll_write.is_open())
+			return_as_code(FAILED_TO_OPEN_FILE);
+
+		dll_write.write(reinterpret_cast<const char *>(client_bin), sizeof(client_bin));
+		dll_write.close();
+
+		if (!remote_LoadLibraryW(proc_open, dll_path))
+			return_as_code(FAILED_TO_REMOTE_INJECT);
+	}
+	#endif
 	
-	if (!remote_LoadLibraryW(proc_open, dll_path))
-		return_as_code(FAILED_TO_REMOTE_INJECT);
-
 	return_as_code(SUCCESSFUL);
 }

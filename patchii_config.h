@@ -4,7 +4,7 @@
 // This only applies to release builds.
 // All debug builds are loaded with LoadLibrary
 //--config:manualmap
-#define PATCHII_NOT_MANUALMAPPING
+// #define PATCHII_NOT_MANUALMAPPING
 // 
 
 // =================================
