@@ -45,10 +45,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	{
 		PIMAGE_NT_HEADERS nt_header = pe_get_ntheaderptr(client_bin);
 		
-		#ifdef _M_IX86
 		constexpr std::ptrdiff_t sc_offset_entrypoint = 0x6;
-		constexpr std::ptrdiff_t sc_offset_loadinfo   = 0xB;
 
+		#ifdef _M_IX86
+		constexpr std::ptrdiff_t sc_offset_loadinfo   = 0xB;
 		std::uint8_t shellcode[] =
 		{
 			0x55,						   // push   ebp
@@ -68,9 +68,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			0xC2, 0x00, 0x00			   // ret    0x0
 		};
 		#elif _M_X64
+		constexpr std::ptrdiff_t sc_offset_loadinfo   = 0x10;
 		std::uint8_t shellcode[] =
 		{
-			0x00
+			0x48, 0x83, 0xEC, 0x28,										// sub    rsp, 0x28
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// movabs rax, 0x0000000000000000
+			0x49, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// movabs r8,  0x0000000000000000
+			0xBA, 0x01, 0x00, 0x00, 0x00,								// mov    edx, 0x1
+			0x31, 0xC9,													// xor    ecx, ecx
+			0xFF, 0xD0,													// call   rax
+			0x48, 0x83, 0xC4, 0x28,										// add    rsp, 0x28
+			0xC2, 0x00, 0x00											// ret    0x0
 		};
 		#endif
 
@@ -107,6 +115,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		if (!WriteProcessMemory(proc_open, shellcode_alloc, shellcode, sizeof(shellcode), nullptr))
 			return_as_code(FAILED_TO_WRITE_SHELLCODE);
+
+		HANDLE shellcode_execute = CreateRemoteThread(proc_open, nullptr, NULL, LPTHREAD_START_ROUTINE(shellcode_alloc), nullptr, NULL, nullptr);
+		if (!shellcode_execute)
+			return_as_code(FAILED_TO_EXECUTE_SHELLCODE);
+
+		if (WaitForSingleObject(shellcode_execute, INFINITE))
+			return_as_code(FAILED_TO_WAIT_SHELLCODE);
 	}
 	#elif defined( PATCHII_LOADAS_LOADLIB )
 	{
