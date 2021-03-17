@@ -119,7 +119,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		HANDLE shellcode_execute = CreateRemoteThread(proc_open, nullptr, NULL, LPTHREAD_START_ROUTINE(shellcode_alloc), nullptr, NULL, nullptr);
 		if (!shellcode_execute)
 			return_as_code(FAILED_TO_EXECUTE_SHELLCODE);
-
+		
 		if (WaitForSingleObject(shellcode_execute, INFINITE))
 			return_as_code(FAILED_TO_WAIT_SHELLCODE);
 	}
@@ -137,7 +137,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		dll_write.write(reinterpret_cast<const char *>(client_bin), sizeof(client_bin));
 		dll_write.close();
-
+		
 		if (!remote_LoadLibraryW(proc_open, dll_path))
 			return_as_code(FAILED_TO_REMOTE_INJECT);
 	}

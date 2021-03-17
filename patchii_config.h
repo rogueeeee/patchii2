@@ -1,20 +1,19 @@
 #pragma once
 
-//
-// This only applies to release builds.
-// All debug builds are loaded with LoadLibrary
-//--config:manualmap
-// #define PATCHII_NOT_MANUALMAPPING
-// 
-
 // =================================
 // Internal Segment - DO NOT MODIFY
 // =================================
 
-#if defined( NDEBUG ) && !defined( PATCHII_NOT_MANUALMAPPING )
+#if defined( PATCHII_USE_MANUALMAP ) || __has_include("compileflag_manualmap.h") || ( defined( NDEBUG ) && !defined( PATCHII_USE_LOADLIB ) && !__has_include("compileflag_loadlib.h") )
 	#define PATCHII_LOADAS_MANUALMAPPED
-#else
+#endif
+
+#if defined( PATCHII_USE_LOADLIB ) || __has_include("compileflag_loadlib.h") || ( defined( _DEBUG ) && !defined( PATCHII_USE_MANUALMAP ) && !__has_include("compileflag_manualmap.h") )
 	#define PATCHII_LOADAS_LOADLIB
+#endif
+
+#if defined( PATCHII_LOADAS_MANUALMAPPED ) && defined( PATCHII_LOADAS_LOADLIB )
+	#error "Conflicting loading method!"
 #endif
 
 #ifdef _DEBUG

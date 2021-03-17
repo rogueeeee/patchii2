@@ -67,13 +67,15 @@ A python script is provided to automatically setup the required binary headers a
     py build.py <optional parameters>
     ```
 
-    | Parameter     | Description                                                                      |
-    | ------------- | -------------------------------------------------------------------------------- |
-    | -noupx / -upx | Toggles UPX compression after full build.                                        |
-    | -bd.client    | Sets the build depth to 0. Only builds the client project.                       |
-    | -bd.injector  | Sets the build depth to 1. Only builds the client and injector project.          |
-    | -bd.loader    | Sets the build depth to 2. Only builds the client, injector, and loader project. |
-    | -bd.full      | Sets the build depth to maximum. Builds the entire project.                      |
+    | Parameter        | Description                                                                      |
+    | ---------------- | -------------------------------------------------------------------------------- |
+    | -noupx / -upx    | Toggles UPX compression after full build.                                        |
+    | -bd.client       | Sets the build depth to 0. Only builds the client project.                       |
+    | -bd.injector     | Sets the build depth to 1. Only builds the client and injector project.          |
+    | -bd.loader       | Sets the build depth to 2. Only builds the client, injector, and loader project. |
+    | -bd.full         | Sets the build depth to maximum. Builds the entire project.                      |
+    | -ll / -loadlib   | Sets the loading method to load library                                          |
+    | -mm / -manualmap | Sets the loading method to manual mapping                                        |
 
 4. The final compiled binaries (patchii loader) should be located at **build\final**
 

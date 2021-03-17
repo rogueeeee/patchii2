@@ -5,3 +5,5 @@ build/
 patchii/
 todo.txt
 /__pycache__
+compileflag_loadlib.h
+compileflag_manualmap.h

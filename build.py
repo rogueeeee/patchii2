@@ -7,16 +7,26 @@ from distutils.spawn import find_executable
 
 upx_enabled = True
 build_depth = 2
+make_cflag = 0
+
+def cleanup_extra():
+    if os.path.exists("compileflag_manualmap.h"):
+        os.remove("compileflag_manualmap.h")
+    if os.path.exists("compileflag_loadlib.h"):
+        os.remove("compileflag_loadlib.h")
+    return
 
 def run_msbuild(project_name, platform):
     if int(os.system("msbuild patchii2.sln /t:" + project_name + " /p:TreatWarningsAsErrors=true /p:Configuration=Release /p:Platform=" + platform)) is not 0:
         print("\nBUILD FAILED\n")
+        cleanup_extra()
         exit(1)
     return
 
 def run_upx(path):
     if int(os.system("upx " + os.path.realpath(path) + " -9 -v -f")) is not 0:
         print("\nCOMPRESSING FAILED\n")
+        cleanup_extra()
         exit(1)
     return
 
@@ -32,6 +42,10 @@ for arg in sys.argv[1:]:
         build_depth = 1
     elif arg == "-bd.loader" or arg == "-bd.full":
         build_depth = 2
+    elif arg == "-mm" or arg == "-manualmap":
+        make_cflag = 1
+    elif arg == "-ll" or arg == "-loadlib":
+        make_cflag = 2
     else:
         print("Unknown parameter: " + arg)
         exit(1)
@@ -39,18 +53,27 @@ for arg in sys.argv[1:]:
 # Check for msbuild
 if find_executable("msbuild") is None:
     print("ERROR: msbuild not found! Add the msbuild directory to your environment path variable")
+    cleanup_extra()
     exit(1)
 
 # Check for UPX
 if upx_enabled and find_executable("upx") is None:
     print("ERROR: upx was not found! Add the upx directory to your environment path variable or use the -noupx parameter when executing the script")
+    cleanup_extra()
     exit(1)
 
 # Run cleanup
 print("Running cleanup...")
+cleanup_extra()
 if os.system("msbuild patchii2.sln /t:Clean") is not 0:
     print("Cleanup failed")
     exit(1)
+
+# Create build flag header files
+if make_cflag == 1:
+    open("compileflag_manualmap.h", "x").close()
+if make_cflag == 2:
+    open("compileflag_loadlib.h", "x").close()
 
 # Build client
 if 0 <= build_depth:
@@ -99,4 +122,5 @@ if build_depth == 2:
             exit(1)
     os.startfile(os.path.realpath("build/final"))
 
+cleanup_extra()
 exit(0)
